@@ -4,6 +4,7 @@
 
 - KiCad 10.0.xの版確認、空回路ERC、RC過渡解析を再現する環境スモークテストを追加
 - `hardware-ci`を実ファイルに対するERC/DRC violationで失敗する構成へ更新
+- ERC/DRC violation fixtureと終了コード5を確認するnegative testを追加
 
 ## 0.1.0 - 2026-08-01
 

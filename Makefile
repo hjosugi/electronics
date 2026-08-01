@@ -6,7 +6,7 @@ SPICE_FILES := \
 	spice/gpio-series-resistors.cir \
 	spice/passive-connector-bounce.cir
 
-.PHONY: notebooklm check-notebooklm check-links check check-kicad simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm check-links check check-kicad check-kicad-negative simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -23,6 +23,9 @@ check: check-notebooklm check-links
 check-kicad:
 	bash ./scripts/check-kicad.sh
 
+check-kicad-negative:
+	bash ./scripts/check-kicad-negative.sh
+
 simulate:
 	@command -v ngspice >/dev/null || { echo "ngspice が必要です" >&2; exit 1; }
 	@set -euo pipefail; for circuit in $(SPICE_FILES); do \
@@ -32,7 +35,7 @@ simulate:
 
 validate: check simulate
 
-validate-hardware: check check-kicad simulate
+validate-hardware: check check-kicad check-kicad-negative simulate
 
 package:
 	@test -n "$(VERSION)" || { echo "VERSION=v0.1.0 のように指定してください" >&2; exit 1; }
