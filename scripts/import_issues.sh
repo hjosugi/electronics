@@ -14,6 +14,21 @@ issue_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../issues" && pwd)"
 work_dir="$(mktemp -d)"
 trap 'rm -rf "$work_dir"' EXIT
 
+gh_retry() {
+  local attempt
+  for attempt in 1 2 3; do
+    if gh "$@"; then
+      return 0
+    fi
+    if ((attempt < 3)); then
+      sleep "$attempt"
+    fi
+  done
+
+  echo "GitHub API呼び出しが3回失敗しました: gh $*" >&2
+  return 1
+}
+
 declare -A labels=(
   [env]="1d76db"
   [repo]="0e8a16"
@@ -29,7 +44,7 @@ declare -A labels=(
 
 if [[ "$dry_run" == false ]]; then
   for name in "${!labels[@]}"; do
-    gh label create "$name" \
+    gh_retry label create "$name" \
       --repo "$repo" \
       --color "${labels[$name]}" \
       --force
@@ -37,7 +52,7 @@ if [[ "$dry_run" == false ]]; then
 fi
 
 existing_titles="$work_dir/existing-titles.txt"
-if gh issue list \
+if gh_retry issue list \
   --repo "$repo" \
   --state all \
   --limit 1000 \
@@ -72,7 +87,7 @@ for issue in "$issue_dir"/[0-9][0-9]-*.md; do
 
   body_file="$work_dir/body.md"
   tail -n +3 "$issue" >"$body_file"
-  gh issue create \
+  gh_retry issue create \
     --repo "$repo" \
     --title "$title" \
     --label "$issue_labels" \
