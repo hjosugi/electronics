@@ -39,7 +39,6 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 9. [実装ロードマップとIssue完了条件](docs/08-roadmap.md)
 10. [教育用ngspiceモデルの基準結果](docs/09-simulation-results.md)
 11. [KiCad 10開発環境とスモークテスト](docs/10-kicad-environment.md)
-12. [CachyOSツールチェーン環境](docs/11-toolchain-environment.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -73,7 +72,7 @@ ngspice -b spice/rc-transient.cir
 KiCad 10.0.xとQMKをホストへ導入する場合の例です。実際に実行する前にパッケージ差分を確認してください。
 
 ```bash
-pkexec pacman -S --needed kicad kicad-library ngspice qmk
+sudo pacman -S kicad kicad-library kicad-library-3d qmk
 qmk setup
 kicad-cli version
 ```
@@ -81,8 +80,6 @@ kicad-cli version
 KiCadにはngspiceベースの統合シミュレータがあります。CLI版`ngspice`は、付属`.cir`ファイルの再現実行とCIに使います。
 
 KiCad 10環境、空回路ERC、RC過渡解析をまとめて確認する手順は[開発環境スモークテスト](docs/10-kicad-environment.md)に記録しています。
-
-現在のKiCad/ngspice/QMK導入状態は`make environment`で確認できます。確認済みパッケージ版、3Dライブラリ容量、エージェント環境の制約は[ツールチェーン環境](docs/11-toolchain-environment.md)に記録しています。
 
 ## Issue
 
