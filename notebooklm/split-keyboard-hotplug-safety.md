@@ -1082,7 +1082,7 @@ nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
 
 ## 確認したパッケージ
 
-2026年7月31日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
+2026年8月1日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
 
 | パッケージ | 確認した版 | 用途 |
 |---|---:|---|
@@ -1187,7 +1187,7 @@ make validate-hardware
 
 これによりKiCad 10.0.x、ERC/DRC、RCを含むngspiceモデルを同じジョブで確認できます。空回路のERC成功は環境スモークテストであり、将来の実回路の電気的妥当性や安全性を保証しません。
 
-## 2026年7月31日の検証結果
+## 2026年8月1日の検証結果
 
 Nix storeに取得済みのKiCad 10.0.5とngspice 45を使い、`make validate-hardware`を実行しました。
 
@@ -1201,3 +1201,22 @@ Nix storeに取得済みのKiCad 10.0.5とngspice 45を使い、`make validate-h
 | Markdown、ShellCheck、Issue形式 | 合格 |
 
 この数値は1 kΩ・1 µFの教育用RCモデルに対する環境確認値です。分割キーボードの保護部品や活線挿抜安全性の根拠には使用しません。
+
+## ERC/DRC violationのnegative test
+
+CIが「正常ファイルで緑になる」だけでなく、違反を確実に失敗として扱うことを次のfixtureで検証します。
+
+| fixture | 意図した違反 | 期待結果 |
+|---|---|---|
+| `tests/fixtures/kicad/erc-dangling-wire.kicad_sch` | どこにも接続されないwire | `wire_dangling`、終了コード5 |
+| `tests/fixtures/kicad/drc-open-outline.kicad_pcb` | 閉じていない`Edge.Cuts` | `invalid_outline`、終了コード5 |
+
+実行コマンドは次です。
+
+```bash
+make check-kicad-negative
+```
+
+negative test用ファイルは`tests/fixtures/kicad/`に隔離し、製造用の`hardware/`検索対象へ混ぜません。スクリプトは単に非ゼロ終了を期待するのではなく、KiCad CLIがviolation時に返す終了コード5と、レポート中の違反IDを両方確認します。構文エラーやクラッシュを「違反検出成功」と誤認しません。
+
+KiBotによるGerber、BOM、PDF生成は、製造用回路図とPCBが確定してから追加します。空回路とnegative fixtureしかない段階では、製造artifactを生成しても発注可能性の証拠にならないためです。
