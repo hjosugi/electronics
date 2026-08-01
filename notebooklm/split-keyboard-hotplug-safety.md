@@ -1082,7 +1082,7 @@ nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
 
 ## 確認したパッケージ
 
-2026年8月1日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
+2026年7月31日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
 
 | パッケージ | 確認した版 | 用途 |
 |---|---:|---|
@@ -1187,7 +1187,7 @@ make validate-hardware
 
 これによりKiCad 10.0.x、ERC/DRC、RCを含むngspiceモデルを同じジョブで確認できます。空回路のERC成功は環境スモークテストであり、将来の実回路の電気的妥当性や安全性を保証しません。
 
-## 2026年8月1日の検証結果
+## 2026年7月31日の検証結果
 
 Nix storeに取得済みのKiCad 10.0.5とngspice 45を使い、`make validate-hardware`を実行しました。
 
