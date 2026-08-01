@@ -16,6 +16,8 @@ documents=(
   docs/07-sources.md
   docs/08-roadmap.md
   docs/09-simulation-results.md
+  docs/10-kicad-environment.md
+  docs/11-toolchain-environment.md
 )
 
 mkdir -p -- "$(dirname -- "$output")"
