@@ -22,4 +22,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: KiCad 10・ERC/DRC・ngspice
-        run: make validate-hardware
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./scripts/check-notebooklm.sh
+          bash ./scripts/check-markdown-links.sh
+          bash ./scripts/validate.sh
+          bash ./scripts/check-kicad.sh
+
+          for circuit in \
+            spice/rc-transient.cir \
+            spice/trrs-vcc-short.cir \
+            spice/gpio-series-resistors.cir \
+            spice/passive-connector-bounce.cir
+          do
+            echo "==> $circuit"
+            ngspice -b "$circuit"
+          done
