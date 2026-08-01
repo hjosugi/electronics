@@ -20,6 +20,7 @@ documents=(
   docs/11-toolchain-environment.md
   docs/12-validation-performance.md
   docs/13-matrix-rj45-safety.md
+  docs/14-qmk-firmware.md
   docs/layout/README.md
   docs/adr/0001-use-waveshare-rp2040-zero.md
   docs/adr/0002-use-36-key-choc-v1-layout.md
