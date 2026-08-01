@@ -1,7 +1,7 @@
 # 分割キーボードのホットプラグ安全設計とOSSシミュレーション
 
 > NotebookLM用統合資料。生成元は本リポジトリのdocsディレクトリです。
-> 内容確認日: 2026-07-31。製造前にリンク先の最新版と採用部品を再確認してください。
+> 内容確認日: 2026-08-01。製造前にリンク先の最新版と採用部品を再確認してください。
 
 ## この統合資料について
 
@@ -865,7 +865,7 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
 
 ## 一次資料と更新日
 
-確認日: 2026-07-31
+確認日: 2026-08-01
 
 リンク先は更新されることがあります。製造直前に、版番号、改訂日、採用部品の注文型番を再確認してください。
 
@@ -886,6 +886,12 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
 
 - [tompi/cheapino](https://github.com/tompi/cheapino)
   1 MCU、8P8C、Japanese duplex matrixの公開作例。
+- [pashutk/chocofi（参照commit）](https://github.com/pashutk/chocofi/tree/273676d11b06785fb5a1a94860a39fc36c38baba)
+  36キー、Choc、3×5+3の物理配置基準。座標の派生範囲とCERN-OHL-P-2.0は`docs/layout/`に記録。
+- [Kinesis Advantage2公式資料](https://kinesis-ergo.com/shop/advantage2/)
+  左右分離、縦列、親指クラスタ、20° tenting、concave keywellのメーカー説明。
+- [Kailh PG1350シリーズ](https://www.kailhswitch.com/info/kailh-kl-switches-pg1350-series-23772219.html)
+  Choc v1のスイッチ型番、操作力、ストロークのメーカー資料。
 - [Salicylic-acid3/KiCAD_FootPrint](https://github.com/Salicylic-acid3/KiCAD_FootPrint)
   自作キーボード向けKiCadフットプリント集。
 - [サリチル酸: GL516デザインガイド](https://zenn.dev/salicylic_acid3/books/gl516_design_guide/)
@@ -911,6 +917,10 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
   バックエンド比較とngspice推奨。
 - [pfalstad/circuitjs1](https://github.com/pfalstad/circuitjs1)
   Falstad Circuit Simulatorのブラウザ版ソース。
+- [Ergogen: Points](https://docs.ergogen.xyz/points/)
+  column stagger、spread、splay、独立zoneをパラメータ化する公式資料。
+- [Keyboard Layout Editor: serial.js](https://github.com/ijprest/keyboard-layout-editor/blob/580b916084e69e600b2144b0217c8b1d9710daa0/serial.js)
+  KLE Raw dataのメタデータ、座標、回転を扱う公式実装。
 
 ## USB-Cと保護部品
 
@@ -940,7 +950,7 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
 
 現在のリポジトリは、方式選定と検証方法をまとめたスターターです。製造可能なKiCad基板やQMKファームウェアがまだないため、「文書が丁寧だから完成」とは扱いません。
 
-未完成作業は[GitHub Issues](https://github.com/hjosugi/electronics/issues)と[`issues/`](../issues/)の原稿で追跡します。各Issueには、背景、作業、客観的な完了条件があります。
+未完成作業は[GitHub Issues](https://github.com/hjosugi/electronics/issues)と[`issues/`](../issues)の原稿で追跡します。各Issueには、背景、作業、客観的な完了条件があります。
 
 ## フェーズ0: 公開基盤
 
@@ -966,6 +976,8 @@ Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路E
 
 Issue 08では、初号機にWaveshare RP2040-Zeroモジュールを採用する判断を[ADR 0001](https://github.com/hjosugi/electronics/blob/main/docs/adr/0001-use-waveshare-rp2040-zero.md)へ記録しました。GPIO割り当て、保護回路、QMK設定の合格を先取りする決定ではありません。
 
+Issue 05では、初号機を36キー、Kailh Choc v1、Chocofi基準の18×17 mm配置、エンコーダなしとする判断を[ADR 0002](../docs/adr/0002-use-36-key-choc-v1-layout.md)へ記録しました。Kinesisの縦列、独立親指クラスタ、分離、段階的tentingという原則を取り入れ、stagger、splay、親指位置、机上フィット値を[制限付きプロファイル](../docs/layout/profiles/balanced-kinesis-inspired.json)から生成します。人体適合、キーキャップ干渉、フットプリント、concave keywellは実機で未検証であり、後続Issueで確認します。
+
 ## フェーズ2: シミュレーションとファームウェア
 
 | Issue | 検証 | 合格の考え方 |
@@ -985,6 +997,8 @@ Issue 11では、電流制限付き電源と専用治具を使って活線挿抜
 - 基板SHA、firmware SHA、ケーブル、測定器の記録
 
 PCのUSBポート、Ethernetスイッチ、PoE機器を故障注入用には使いません。誤接続は机上解析、無通電導通、保護した治具で評価します。
+
+[Issue #16](https://github.com/hjosugi/electronics/issues/16)では、Kinesisの原則をケースへ適用し、平面PCB + 交換式wedgeとtrue keywell候補を比較します。初号機は0°、10°、20°のtentingを先に検証し、concave keywellは配線方式、組立公差、実測計画を伴う別アーキテクチャとして扱います。リポジトリ内の正本は`issues/13-kinesis-keywell-case.md`です。GitHubではIssueとPull Requestが同じ連番を使うため、ファイル番号と公開Issue番号は一致しません。
 
 ## フェーズ4: NotebookLMと発注
 
@@ -1305,6 +1319,8 @@ nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
 [`scripts/run-validation.sh`](../scripts/run-validation.sh)は次を並列実行します。
 
 - NotebookLM統合Markdownの再生成差分
+- 36キーレイアウトの再生成差分、値域、不変条件
+- ドキュメントCSSの必須変数、タイポグラフィ直書き、インラインstyle
 - Markdownローカルリンク
 - Bash構文、ShellCheck、Issue形式、`git diff --check`
 - ngspiceモデル
@@ -1316,7 +1332,7 @@ KiCadの通常検査とnegative testは、KiCad CLIのインスタンスロッ�
 
 ## 2026年8月1日の測定
 
-Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォームキャッシュで`validate-hardware`相当の全検査を各3回実行しました。
+Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォームキャッシュで`validate-hardware`相当の全検査を各3回実行しました。この測定値はレイアウト/CSS検査を追加する前の基準値であり、追加後の性能値としては扱いません。
 
 | 実装 | 1回目 | 2回目 | 3回目 | 中央値 |
 |---|---:|---:|---:|---:|
@@ -1334,3 +1350,393 @@ Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォー�
 ```bash
 make validate-hardware
 ```
+
+
+---
+
+## 初号機36キーレイアウトと調整プロファイル
+
+Issue [#5](https://github.com/hjosugi/electronics/issues/5)と[ADR 0002](../docs/adr/0002-use-36-key-choc-v1-layout.md)で、初号機の標準レイアウトを次のように固定しました。
+
+| 項目 | 標準値 |
+| --- | --- |
+| キー数 | 36キー、片側`3行 × 5列 + 親指3キー` |
+| スイッチ | Kailh PG1350（Choc v1） |
+| ピッチ | 横18.00 mm、縦17.00 mm |
+| column stagger | 外側から`18.00 / 6.00 / 0.00 / 6.62 / 9.00 mm` |
+| column splay | 標準は全列0°、各列±3°以内で調整可能 |
+| 親指クラスタ | 3キー、位置と角度を制限付きで調整可能 |
+| ロータリーエンコーダ | 初号機には載せない |
+| キー面 | 初号機は平面PCB。concave keywellは含めない |
+| tenting | ケース側で0°、10°、20°を選べる設計目標 |
+
+これは物理配置の基準です。QWERTYなどの論理キーマップ、Japanese duplex matrixの行列割り当て、GPIO、ダイオード極性はIssue #6と#10で別に確定します。
+
+## Kinesisから取り入れる考え方
+
+Kinesis Advantage2のメーカー資料は、左右を離すこと、指の自然な運動に沿う縦列、独立した親指クラスタ、20°のtenting、凹型keywellを主な特徴として説明しています。
+
+初号機では、その考え方を次の境界で取り入れます。
+
+- 左右を独立させ、机上で肩幅、yaw、前後位置を利用者が変えられる
+- 各列は縦方向にそろえ、指長差はcolumn staggerで吸収する
+- 親指3キーへSpace、Backspace、Enter、レイヤーなど高頻度機能を割り当てられる
+- ケースの脚またはウェッジで0°、10°、20°のtentingを選べるようにする
+- キー配置を生成プロファイル化し、紙面モックの結果を数値へ反映できる
+
+一方、Kinesisのconcave keywellは、スイッチ面そのものを三次元に配置する構造です。単一の平面PCBへスイッチを実装する初号機では再現できません。keywellを有効にするには、分割小基板、フレキシブルPCB、手配線、または別体スイッチプレートを含む別アーキテクチャが必要です。平面PCBの合格を先取りせず、[Issue #16](https://github.com/hjosugi/electronics/issues/16)で扱います。
+
+これらは医療上の効果や特定の利用者への適合を保証しません。痛みやしびれがある場合は、キーボードだけで解決しようとせず、休止、作業環境の見直し、必要に応じた専門家への相談を優先してください。
+
+## 成果物
+
+- [`profiles/balanced-kinesis-inspired.json`](../docs/layout/profiles/balanced-kinesis-inspired.json): 標準値と利用者が変更できる項目
+- [`36-key-choc-v1.layout.json`](../docs/layout/36-key-choc-v1.layout.json): mm単位のスイッチ中心、キーID、机上調整値を含む製造設計用の正本
+- [`36-key-choc-v1.kle.json`](../docs/layout/36-key-choc-v1.kle.json): [Keyboard Layout Editor](https://www.keyboard-layout-editor.com/)のRaw dataへ読み込むレビュー用JSON
+- [`scripts/build-layout.py`](../scripts/build-layout.py): プロファイル検証とJSON生成
+
+標準成果物の再生成と差分検査は次のとおりです。
+
+```bash
+make layout
+make check-layout
+```
+
+KLEは正方形の抽象単位を使うため、このファイルではX軸1 unitを18 mm、Y軸1 unitを17 mmとして表示しています。回転したキーの製造座標には、KLE画面から測り直さず、必ず`.layout.json`のmm値を使います。
+
+## 利用者が変更できる範囲
+
+標準プロファイルを別名でコピーし、次の値だけを小さく変更できます。生成スクリプトは範囲外、キー不足、重複ID、キー中心間隔15.5 mm未満を拒否します。
+
+| 設定 | 許容範囲 | 目的 |
+| --- | --- | --- |
+| C0 stagger | 10–22 mm | 小指列を手首側へ寄せる |
+| C1 stagger | 2–10 mm | 薬指長に合わせる |
+| C2 stagger | 0 mm固定 | Y座標の基準を維持する |
+| C3 stagger | 2–10 mm | 人差し指列の到達を調整する |
+| C4 stagger | 5–14 mm | 内側人差し指列の到達を調整する |
+| 各列splay | -3–3° | 指の開きに合わせて列をわずかに回す |
+| 親指キー位置 | 標準から概ね4–6 mm以内 | 親指長と可動域へ合わせる |
+| 親指キー角度 | キーごとの制限内 | 無理な外転を避ける |
+| 左右間隔 | 120–260 mm | 肩幅へ合わせる机上設定 |
+| half yaw | 0–15° | 手首の尺屈を減らす机上設定 |
+| 標準tent | 0°、10°、20°から選択 | 前腕回内へ合わせるケース設定 |
+
+たとえば個人用プロファイルを作り、追跡対象外の一時ディレクトリへ生成します。
+
+```bash
+cp docs/layout/profiles/balanced-kinesis-inspired.json /tmp/my-keyboard-profile.json
+python3 scripts/build-layout.py \
+  --profile /tmp/my-keyboard-profile.json \
+  --output-dir /tmp/my-keyboard-layout
+```
+
+ピッチ、キー数、スイッチ系統、平面PCBという前提は、このプロファイルでは変更できません。そこまで変える場合は、別設計として新しいADRと検証を必要とします。
+
+## 片側の標準座標
+
+片側ローカル座標は、C0中心のX=0とC2最上段中心のY=0が作る基準点を原点とし、Xは外側小指列から内側人差し指列、Yは指先側から手首側を正方向とします。右側は同じ形状を鏡像化します。
+
+```text
+C0  x= 0 mm  y=18.00, 35.00, 52.00
+C1  x=18 mm  y= 6.00, 23.00, 40.00
+C2  x=36 mm  y= 0.00, 17.00, 34.00
+C3  x=54 mm  y= 6.62, 23.62, 40.62
+C4  x=72 mm  y= 9.00, 26.00, 43.00
+Thumb 0       (48.10, 60.59),   0 deg
+Thumb 1       (68.15, 63.18), -15 deg
+Thumb 2       (88.75, 66.39),  60 deg
+```
+
+column splayを変更すると、各列のhome row中心を軸に上下キーの中心座標も回転します。親指キーの番号は外側から内側です。
+
+## 1:1フィット確認
+
+PCB外形や配線を確定する前に、次を行います。
+
+1. `.layout.json`から1:1の紙または仮プレートを出力する
+2. 採用予定のChoc v1キーキャップを置き、隣接干渉を確認する
+3. 手首を曲げずに小指3段と親指3キーを押せるか、左右それぞれ確認する
+4. 左右間隔、yaw、tentを少なくとも2段階ずつ試し、値と所感を記録する
+5. RP2040-Zero、8P8C、ケース壁の領域と干渉しないかKiCadで確認する
+6. Kailhの最新図面と購入したスイッチ／ソケットを実測し、フットプリントを照合する
+
+合わない場合は生成後のJSONを直接編集せず、プロファイルを変更します。許容範囲を超える変更は、新しいADRへ理由と実測結果を記録します。
+
+## 一次資料
+
+- [Kinesis Advantage2公式製品資料](https://kinesis-ergo.com/shop/advantage2/): concave keywell、左右分離、縦列、20° tenting、親指クラスタ
+- [Kinesis Advantage2 User's Manual](https://kinesis-ergo.com/wp-content/uploads/Adv2-Users-Manual-2-16-18.pdf): 設計意図と姿勢、適応時の注意
+- [Ergogen Points公式資料](https://docs.ergogen.xyz/points/): column stagger、spread、splay、thumb zoneのパラメータ化
+- [Kailh PG1350シリーズ](https://www.kailhswitch.com/info/kailh-kl-switches-pg1350-series-23772219.html): Choc v1のメーカー型番と機械系統
+
+## 由来とライセンス
+
+標準のスイッチ中心座標は、Chocofiの[`pcb/chocofi-topplate.kicad_pcb`](https://github.com/pashutk/chocofi/blob/273676d11b06785fb5a1a94860a39fc36c38baba/pcb/chocofi-topplate.kicad_pcb)を基準に、原点の正規化、左右鏡像化、キーIDと制限付きプロファイルを追加しました。ChocofiはCERN-OHL-P-2.0です。変更表示は[第三者通知](../docs/layout/THIRD_PARTY_NOTICES.md)、ライセンス全文は[`LICENSE.CERN-OHL-P-2.0.txt`](../docs/layout/LICENSE.CERN-OHL-P-2.0.txt)を参照してください。
+
+KLEのファイル形式は公式実装の[`serial.js`](https://github.com/ijprest/keyboard-layout-editor/blob/580b916084e69e600b2144b0217c8b1d9710daa0/serial.js)に合わせています。KLEのコード自体は複製していません。
+
+
+---
+
+## ADR 0001: 初号機はWaveshare RP2040-Zeroモジュールを使う
+
+- 状態: Accepted
+- 決定日: 2026-07-31
+- 対応Issue: [#8](https://github.com/hjosugi/electronics/issues/8)
+- 適用範囲: 初号機（v0.1）の左側コントローラ
+
+## 文脈
+
+初号機は、1 MCU、8P8C、右側完全パッシブ方式です。左側にはUSBデバイス、キーマトリクス走査、QMKファームウェアを担当するMCUが必要です。
+
+候補は次の2案でした。
+
+1. RP2040-Zero完成モジュールをキャリア基板へ載せる
+2. 素のRP2040、SPI flash、電源、クロック、USB-Cを左基板へ直接実装する
+
+初号機の目的は、Japanese duplex matrixと中央接続の安全設計を検証することです。MCU周辺回路の新規設計まで同時に抱えると、USB、電源、実装不良、キーマトリクスの問題を切り分けにくくなります。
+
+## 決定
+
+初号機は、正規流通の**Waveshare RP2040-Zero**を採用します。ヘッダ実装品または同等の着脱構造を使い、故障時にモジュールを交換できる設計を優先します。
+
+モジュールは左側だけに置きます。USB-Cも左側モジュールのPC接続専用です。中央8P8Cへ`VUSB`、`VSYS`、`5V`、`3V3`、`RAW`を接続しません。
+
+## 根拠
+
+### 初号機の実装リスクを減らせる
+
+[Waveshare公式Wiki](https://www.waveshare.com/wiki/RP2040-Zero)によると、RP2040-ZeroにはRP2040、2 MB flash、USB Type-C、電源回路、BOOT/RESETボタンが実装済みです。キャスタレーション端子とピンヘッダ用端子があり、キャリア基板へ組み込めます。
+
+素のRP2040には不揮発性flashが内蔵されません。[QMKのRP2040資料](https://docs.qmk.fm/platformdev_rp2040)も、外付けSPI flashに対応する第2段ブートローダーの選択が必要であることを説明しています。完成モジュールなら、この周辺回路を初号機の新規設計対象から外せます。
+
+### QMKでRP2040を使える
+
+[QMK公式RP2040サポート](https://docs.qmk.fm/platformdev_rp2040)にはGPIO、USBブート、`GENERIC_RP_RP2040`ボード、PIO/SIOドライバの設定が記載されています。今回の1 MCU方式ではQMK split transportを使わず、GPIOをJapanese duplex matrixへ割り当てます。
+
+実際の`BOARD`、flash設定、BOOT/RESET設定はIssue #2のUF2ビルドで確定します。このADRはファームウェア設定の成功を先取りしません。
+
+### GPIO数に余裕がある
+
+Waveshareは、RP2040-Zeroについて29 GPIOのうち20本をピンヘッダから、残りをはんだパッドから引き出せると説明しています。36キー案の左右合計マトリクス信号は最大12本、42キー案は最大14本を見込むため、USBや基板上LEDなどの予約ピンを除外しても割り当て候補を検討できます。
+
+これは概算です。最終的なGPIO割り当てと予約ピンはIssue #6で回路図、モジュールpinout、QMK設定を突き合わせて確定します。
+
+## 電源に関する注意
+
+Waveshare公式Wikiは、RP2040-Zeroの`VSYS`と`VUSB`が直接接続されており、外部電源を`VSYS`へ接続する場合は逆流防止ダイオードが必要と注意しています。
+
+初号機では次を必須とします。
+
+- PCからの給電は左側RP2040-ZeroのUSB-Cだけにする
+- `VSYS`や`VUSB`へ別電源を同時接続しない
+- 中央8P8Cへ電源を出さない
+- 右側はスイッチとダイオードだけのパッシブ構成を維持する
+
+RP2040のGPIOは5 V tolerantではありません。外部コネクタへ出るGPIOの保護、直列抵抗、ESD対策はIssue #7と#9で確定します。
+
+## 影響
+
+### 利点
+
+- QFN、SPI flash、USB-C、電源回路の初回実装を省略できる
+- BOOT/RESETボタンを使ってUF2を書き込みやすい
+- 故障時にモジュール単位で交換できる
+- 回路不良とキーマトリクス／ファームウェア不良を切り分けやすい
+
+### 欠点
+
+- 素のRP2040より基板が厚くなり、ケース高さが増える
+- モジュール外形と端子位置にPCBレイアウトが拘束される
+- 非正規クローンではflash、USB-C、電源回路が異なる可能性がある
+- モジュールの供給終了や改版に備え、注文先と実物寸法を固定する必要がある
+
+## 採用しなかった案
+
+### 素のRP2040を直載せする
+
+薄型化と部品配置の自由度は高くなりますが、初号機では採用しません。v2で再検討する場合は、Raspberry Pi公式の[Hardware design with RP2040](https://datasheets.raspberrypi.com/rp2040/hardware-design-with-rp2040.pdf)と[Minimal-KiCAD](https://pip.raspberrypi.com/categories/814-rp2040)を正本にし、電源、decoupling、外付けflash、クロック、USB差動配線、BOOT回路を個別に検証します。
+
+### Raspberry Pi Picoを載せる
+
+公式リファレンスとしては優れていますが、初号機の小型左基板には外形が大きく、RP2040-Zeroを優先します。Picoはブレッドボード上のファームウェア検証用として利用できます。
+
+## 実装条件
+
+後続Issueでは次を守ります。
+
+1. Waveshareの外形図と実物を照合してからKiCadフットプリントを確定する
+2. 注文記録にメーカー、製品名、購入先、改版、実測寸法を残す
+3. USB-C開口、BOOT/RESET操作、モジュール交換に必要なケース隙間を確保する
+4. QMK UF2を実際にビルドし、RP2040-Zero実機へ書き込むまでIssue #2をcloseしない
+5. GPIO割り当てはIssue #6、8P8C保護はIssue #7、波形評価はIssue #9で確定する
+
+## 再検討条件
+
+次のいずれかが成立した場合、新しいADRで置き換えを検討します。
+
+- モジュール高さがケース要件を満たさない
+- 必要GPIOを安全に割り当てられない
+- 正規品を継続調達できない
+- v2で薄型化または量産性を優先する
+- RP2040以外へ移行する合理的な要件が確定する
+
+
+---
+
+## ADR 0002: 初号機は調整可能な36キーChoc v1レイアウトとする
+
+- 状態: Accepted
+- 決定日: 2026-08-01
+- 対応Issue: [#5](https://github.com/hjosugi/electronics/issues/5)
+- 適用範囲: 初号機（v0.1）の左右キー配置とスイッチ機械系統
+
+## 文脈
+
+初号機のキー数、スイッチ系統、column stagger、ロータリーエンコーダの有無が未確定でした。この判断はPCB外形、キーマトリクス、GPIO数、キーキャップ、ソケット、ケース高さへ連鎖します。
+
+固定された1種類の平面配置だけでは、指長、親指可動域、肩幅の違いへ対応できません。一方、無制限なパラメータ化は、キーキャップ干渉や未検証のフットプリントを簡単に生みます。Kinesis Advantageの人体工学上の考え方を参考にしつつ、初号機で安全に検証できる範囲と利用者が変えてよい範囲を分ける必要があります。
+
+候補は次のとおりでした。
+
+- 36キー（片側3×5+3）または42キー（片側3×6+3）
+- Kailh Choc v1、Choc v2、MX
+- Cheapinoに近い19 mm配置、Choc向けの狭い配置、独自stagger
+- 固定座標、または制限付きの利用者プロファイル
+- 右側ロータリーエンコーダあり、またはなし
+- 平面PCB、またはKinesisに近いconcave keywell
+
+## 決定
+
+初号機は次に固定します。
+
+1. 合計36キー、片側`3行 × 5列 + 親指3キー`
+2. Kailh PG1350（Choc v1）系統
+3. 基準ピッチは横18.00 mm、縦17.00 mm
+4. 標準column staggerは外側から`18.00 / 6.00 / 0.00 / 6.62 / 9.00 mm`
+5. Kinesisの縦列と親指分担を取り入れ、標準column splayは0°とする
+6. column stagger、各列±3°以内のsplay、親指位置、左右間隔、yaw、tent段階を制限付きJSONプロファイルで変更可能にする
+7. ロータリーエンコーダは載せない
+8. 初号機は単一平面PCBとし、concave keywellは別アーキテクチャとして扱う
+
+標準プロファイル、許容範囲、mm単位の正本は[レイアウト仕様](../docs/layout/README.md)に記録します。
+
+初期購入候補は、Kailh公式がChoc Redとして掲載する`CPG135001D01`、ホットスワップ接点は`CPG135001S30`です。発注番号とフットプリントはIssue #6でメーカーの最新図面と購入実物を照合してから確定し、このADRだけを根拠に発注しません。
+
+## 根拠
+
+### 36キーで初号機の検証範囲を絞る
+
+36キーは、42キーよりスイッチ、ダイオード、配線、ケース開口を6個減らせます。1 MCUと右側完全パッシブ方式の初号機では、キー数を増やすことより、Japanese duplex matrix、8P8C保護、抜線時の入力状態を切り分けられることを優先します。
+
+物理キーが少ないため、数字、記号、ナビゲーションはレイヤーが必要です。これはQMKの論理配列を決めるIssue #10で実機評価します。
+
+### Choc v1で薄型化し、機械系統を限定する
+
+Kailh公式はPG1350を15×15 mmの低背スイッチとして説明し、MX用キーキャップやPCBとは互換でないと明記しています。[PG1350シリーズ一覧](https://www.kailhswitch.com/info/kailh-kl-switches-pg1350-series-23772219.html)にはRed `CPG135001D01`、Brown `CPG135001D02`、White `CPG135001D03`が掲載されています。
+
+初号機ではMXとの複合フットプリントやChoc v2との兼用を要件にせず、PG1350用の穴、接点、キーキャップ間隔へ設計範囲を限定します。低背化はケース高さを減らせますが、スイッチ上面から基板までの総高さはキーキャップ、プレート、ソケット、PCB厚を含めて別途積み上げます。
+
+### Kinesisの原則を平面分割キーボードへ適用する
+
+[Kinesis Advantage2公式資料](https://kinesis-ergo.com/shop/advantage2/)は、左右を離したkeywell、指の自然な運動に沿う縦列、強い親指への高頻度キー移動、20° tenting、凹型keywellを特徴として説明しています。
+
+初号機は物理的に左右が分かれているため、肩幅に応じた左右間隔とyawを机上で変更できます。縦列を標準にし、指長差はcolumn staggerで吸収します。独立した親指3キーは、Space、Backspace、Enter、レイヤーなどをQMKで割り当てる余地を作ります。ケース側には0°、10°、20°の段階的tentingを要求します。
+
+ただし、これらを採用しても人体への適合や医療上の効果は保証できません。紙面モック、実機、作業姿勢を利用者ごとに確認します。
+
+### 調整範囲を機械検査する
+
+[Ergogenの公式Points資料](https://docs.ergogen.xyz/points/)は、列ごとの`stagger`、`spread`、`splay`と、matrixから独立したthumb zoneを定義する方法を説明しています。この考え方を、外部依存のないJSON生成スクリプトへ限定的に取り入れます。
+
+利用者はstagger、±3°以内のsplay、親指位置、机上の左右間隔、yaw、標準tent段階を変更できます。スクリプトは値域、36キー、左右18キー、3×5+3、キーID、最小中心間隔を検査し、生成後JSONの手修正を不要にします。
+
+ピッチ、キー数、Choc v1、平面PCB、中央接続の電気方式はプロファイルで変更できません。これらは別の検証とADRを必要とします。
+
+### Chocofiの同一キー構成を標準値にする
+
+[Chocofi](https://github.com/pashutk/chocofi/tree/273676d11b06785fb5a1a94860a39fc36c38baba)は36キー、片側3×5+3、Choc向け、強めの小指staggerを持つ公開ハードウェアです。初号機と同じ物理キー構成で実物写真、トッププレート、ケースがそろっているため、未検証の独自配置をゼロから作るより明確な標準値になります。
+
+トッププレートのスイッチ中心から、横18 mm、縦17 mmと各列のY位置を読み取り、原点を正規化して左右鏡像へ展開しました。元ファイルをそのまま複製せず、MCU、電池、TRRS、基板外形、配線は採用しません。幾何データの由来、変更内容、CERN-OHL-P-2.0は[第三者通知](../docs/layout/THIRD_PARTY_NOTICES.md)に記録します。
+
+Cheapinoは、公式ビルドガイドで19.00 mm間隔を使うと説明していますが、現行設計はMXスイッチです。1 MCU、8P8C、Japanese duplex matrixの電気アーキテクチャは引き続き参考にしますが、Choc v1を選ぶ今回の物理ピッチにはその19 mm値を流用しません。
+
+### concave keywellを初号機へ含めない
+
+Kinesisのkeywellは、キー面を三次元に配置して指の伸展を抑える構造です。単一平面PCBに直接実装するスイッチを設定値だけで凹型にすることはできません。
+
+分割小基板、フレキシブルPCB、手配線、または別体プレートのいずれかを先に選ばず形だけを模倣すると、配線、実装、ケース公差の問題が増えます。初号機では平面PCBと調整式tentingを検証し、true keywellは[Issue #16](https://github.com/hjosugi/electronics/issues/16)へ分離します。
+
+### エンコーダを初号機から外す
+
+ロータリーエンコーダは、追加GPIO、機械固定、ケース開口、ノブ高さ、回転入力のデバウンス評価を増やします。音量やスクロールは一旦キーとレイヤーへ割り当て、1 MCU・パッシブ右側・活線挿抜評価の完成を優先します。
+
+## 影響
+
+### 利点
+
+- 同一スイッチ、1uキーだけでBOMとプレートを単純化できる
+- 42キーよりマトリクスとケースの検証対象が少ない
+- Choc v1向けの狭いピッチで左右幅を抑えられる
+- 縦列、親指分担、分離、tentingという原則を初号機へ段階的に適用できる
+- 利用者は検査された範囲で指長、親指、肩幅へ合わせられる
+- Chocofiの実装を比較対象にして標準座標をレビューできる
+
+### 欠点
+
+- 36キーではレイヤー操作を覚える必要がある
+- Choc v1とMXのキーキャップ、PCB、プレートを共用できない
+- 強い小指staggerと親指角度が全員の手に合うとは限らない
+- 平面PCBはKinesisのconcave keywellを再現しない
+- プロファイルごとに1:1モックと干渉確認が必要になる
+- エンコーダを後付けするにはPCBとケースの再設計が必要になる
+
+## 採用しなかった案
+
+### 42キー、片側3×6+3
+
+専用レイヤーへの依存は減りますが、初号機の部品、配線、外形を増やします。36キーの実機評価で不足が確認された場合に再検討します。
+
+### MX、19 mm級ピッチ
+
+キーキャップとスイッチの選択肢は広い一方、初号機を低背化する要望と合いません。Cheapinoの電気方式を参考にすることと、MX機械系統を採用することは分けて判断します。
+
+### Choc v2または複合フットプリント
+
+対応部品は増えますが、穴、接点、キーキャップ干渉、配線領域の検証組み合わせも増えます。初号機ではChoc v1に限定します。
+
+### 固定座標だけを公開する
+
+再現性は高い一方、手の違いを生成元へ反映できず、生成後JSONの直接編集を招きます。標準値を維持しながら、制限付きプロファイルを正規の変更経路にします。
+
+### 初号機からconcave keywellを作る
+
+人体工学上は魅力がありますが、単一平面PCBと両立しません。電気設計と三次元スイッチ実装を同時に初回検証しない方針とします。
+
+### ロータリーエンコーダあり
+
+音量操作には便利ですが、必須入力ではありません。キーボード本体が合格した後の別リビジョンで扱います。
+
+## 実装条件
+
+1. 標準値は[`balanced-kinesis-inspired.json`](../docs/layout/profiles/balanced-kinesis-inspired.json)へ保存する
+2. mm単位の正本は[`36-key-choc-v1.layout.json`](../docs/layout/36-key-choc-v1.layout.json)とし、KLEから製造寸法を逆算しない
+3. `make check-layout`で36キー、左右18キー、3×5+3、値域、最小中心間隔、生成物同期を検査する
+4. PCB化前に1:1紙面または仮プレートで小指と親指の到達性を確認する
+5. 左右間隔、yaw、tentを変えた結果を利用者プロファイルと実測記録へ残す
+6. Kailhの最新スイッチ／ソケット図面と購入実物を照合してからフットプリントを確定する
+7. matrix、GPIO、ダイオード、8P8C信号はIssue #6と#7で別に決める
+8. 中央8P8Cへ`VCC/5V/3V3/RAW`を追加しない
+
+## 再検討条件
+
+次のいずれかが成立した場合、新しいADRで置き換えます。
+
+- 許容範囲内の1:1モックで小指または親指キーに無理なく届かない
+- 購入するChoc v1キーキャップが18×17 mm配置で干渉する
+- 36キーでは必要操作を実用的なレイヤーへ割り当てられない
+- concave keywellの実装方式と検証計画が確定する
+- エンコーダが必須となる具体的なユースケースが確定する
+- Choc v1スイッチ、ソケット、キーキャップを継続調達できない
+- ケース高さや実装制約が低背化の目的を満たさない

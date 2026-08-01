@@ -10,10 +10,11 @@
 ## 現在の成果物
 
 - 36/42キー向けJapanese duplex matrixと8P8Cピン割り当て案
+- Kinesisの原則を取り入れた、調整可能な36キー・Choc v1レイアウト
 - TRRS、8P8C、USB-C、無線方式の比較
 - GPIO直列抵抗、TRRS相当短絡、接点バウンスの教育用ngspiceモデル
 - KiCadから実機評価までの安全チェックリスト
-- GitHubへ登録する12件のIssue定義と冪等な登録スクリプト
+- GitHubへ登録する13件のIssue定義と冪等な登録スクリプト
 - KiCad ERC/DRC用とスターター検証用のGitHub Actions
 
 ## 推奨アーキテクチャ
@@ -41,8 +42,12 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 11. [KiCad 10開発環境とスモークテスト](docs/10-kicad-environment.md)
 12. [CachyOSツールチェーン環境](docs/11-toolchain-environment.md)
 13. [検証処理の並列化と性能](docs/12-validation-performance.md)
+14. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+15. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
+
+ブラウザ向けの入口は[ドキュメントページ](docs/index.html)です。色、余白、font-size、line-height、font-familyは[共通CSS変数](docs/assets/document.css)へ集約し、`make check-document-css`で直書きとインラインstyleを検査します。
 
 ## ローカル検証
 
@@ -52,7 +57,7 @@ ngspiceが導入済みなら、全チェックを実行できます。
 make validate
 ```
 
-`make validate`はNotebookLM、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
+`make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
 
 CachyOSでホストへ恒久インストールせず試す場合は、Nixの一時環境を利用できます。
 
@@ -67,6 +72,14 @@ ngspice -b spice/trrs-vcc-short.cir
 ngspice -b spice/gpio-series-resistors.cir
 ngspice -b spice/passive-connector-bounce.cir
 ngspice -b spice/rc-transient.cir
+```
+
+レイアウトJSONだけを再生成・検証する場合:
+
+```bash
+make layout
+make check-layout
+make check-document-css
 ```
 
 モデル内の電源抵抗、GPIO出力抵抗、ケーブル容量などは比較用の仮定値です。採用部品が決まったら、データシートまたは実測値へ置き換えてください。
@@ -100,7 +113,7 @@ KiCad 10環境、空回路ERC、RC過渡解析をまとめて確認する手順�
 ## ディレクトリ構成
 
 ```text
-docs/                  調査、設計、安全性、一次資料
+docs/                  調査、設計、安全性、レイアウト、一次資料
 issues/                GitHub Issue定義
 spice/                 教育用ngspiceモデル
 scripts/               検証、Issue登録、Release梱包
@@ -112,6 +125,6 @@ case/                  将来のケース/プレートCAD
 
 ## ライセンス
 
-現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。将来追加するQMK派生コードや第三者のフットプリント・モデルは、各上流ライセンスを維持し、必要ならディレクトリ単位のライセンスを追加します。
+現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。Chocofiの座標を基準にしたレイアウト生成物、プロファイル、生成スクリプトは[CERN-OHL-P-2.0と第三者通知](docs/layout/THIRD_PARTY_NOTICES.md)に従います。将来追加するQMK派生コードや第三者のフットプリント・モデルも、各上流ライセンスを維持し、必要ならディレクトリ単位のライセンスを追加します。
 
 Cheapinoなどの参照先は設計上の比較資料であり、その設計ファイルをこのリポジトリへ複製してはいません。

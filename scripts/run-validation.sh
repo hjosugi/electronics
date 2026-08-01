@@ -38,6 +38,8 @@ start_check() {
 }
 
 start_check "NotebookLM" ./scripts/check-notebooklm.sh
+start_check "Layout" python3 ./scripts/build-layout.py --check --self-test
+start_check "Document CSS" python3 ./scripts/check-document-css.py
 start_check "Markdown links" ./scripts/check-markdown-links.sh
 start_check "Static validation" ./scripts/validate.sh
 start_check "ngspice" ./scripts/check-spice.sh

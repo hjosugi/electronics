@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Kinesisの原則を取り入れた36キー・Choc v1の調整可能レイアウトADRを追加
+- mm単位の正本JSON、KLE JSON、制限付きプロファイル、再生成・不変条件検証を追加
+- concave keywellと0°/10°/20° tentingを実機比較する追跡Issueを追加
+- ドキュメントページとCSS変数ベースのタイポグラフィ検証を追加
 - KiCad 10.0.xの版確認、空回路ERC、RC過渡解析を再現する環境スモークテストを追加
 - `hardware-ci`を実ファイルに対するERC/DRC violationで失敗する構成へ更新
 - ERC/DRC violation fixtureと終了コード5を確認するnegative testを追加
