@@ -23,6 +23,9 @@ def main() -> None:
     info = json.loads((KEYBOARD / "keyboard.json").read_text(encoding="utf-8"))
     rules = (KEYBOARD / "rules.mk").read_text(encoding="utf-8")
     matrix = (KEYBOARD / "matrix.c").read_text(encoding="utf-8")
+    scanner = (KEYBOARD / "duplex_matrix.c").read_text(encoding="utf-8")
+    tests = (QMK_ROOT / "tests" / "electronics_splitkb36" / "test_duplex_matrix.cpp").read_text(encoding="utf-8")
+    build_script = (ROOT / "scripts" / "build-qmk.sh").read_text(encoding="utf-8")
     version = (QMK_ROOT / "qmk-version.env").read_text(encoding="utf-8")
     workflow = (ROOT / ".github" / "workflows" / "qmk-ci.yml").read_text(encoding="utf-8")
 
@@ -45,9 +48,14 @@ def main() -> None:
     pins = re.findall(r"\bGP(?:[0-9]|1[01])\b", matrix)
     require(set(pins) == {f"GP{index}" for index in range(12)}, "matrix must use GP0 through GP11")
     require(all(pins.count(f"GP{index}") == 1 for index in range(12)), "each GPIO must be assigned once")
+    combined_scanner = matrix + scanner
     for symbol in ("neutralize_half", "gpio_set_pin_input_high", "gpio_set_pin_output", "wait_us(MATRIX_SETTLE_US)"):
-        require(symbol in matrix, f"matrix safety primitive missing: {symbol}")
+        require(symbol in combined_scanner, f"matrix safety primitive missing: {symbol}")
     require(not re.search(r"\b(?:VBUS|VCC|RAW|5V)\b", matrix), "matrix scanner must not depend on a power rail")
+    require("duplex_matrix_filter_ghosts" in combined_scanner, "topology-specific ghost filter is required")
+    for test_name in ("EveryLogicalPositionMapsExactlyOnce", "DisconnectingRightHalfReleasesItsKeys", "AlternatingThreeEdgePathNeverEmitsPhantomKey"):
+        require(test_name in tests, f"QMK unit-test contract missing: {test_name}")
+    require("qmk test-c" in build_script, "reproducible build must run QMK C unit tests")
 
     ref_match = re.search(r"^QMK_REF=([0-9a-f]{40})$", version, re.MULTILINE)
     require(ref_match is not None, "qmk-version.env needs a full commit SHA")

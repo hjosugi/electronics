@@ -42,9 +42,12 @@ nix shell nixpkgs#qmk -c ./scripts/build-qmk.sh /tmp/qmk_firmware
 | QMK CLI | `1.2.0` |
 | ARM GCC | `15.2.1 20251203` |
 | UF2サイズ | 46,080 bytes |
-| UF2 SHA-256 | `83fb62e0e4bc59dcc3bd4f0eb2a621056f9755e12020d2ce715ccac74f7c03d8` |
+| QMK native tests | 6 tests passed |
+| UF2 SHA-256 | `266826a48637016e0db4767345872961118c4c5274de118b6d745da2dc2af631` |
 
 この記録は「ソースがRP2040向けにコンパイルできた」証拠です。GPIOの電圧、ダイオード極性、同時押し、抜線中の押下残り、活線挿抜安全性を証明するものではありません。
+
+duplex走査とghost抑制の自動テスト、保守的な制限、2 × 2実機手順は[QMK matrixテスト](15-qmk-matrix-tests.md)に分離しています。
 
 書き込み時はRP2040-ZeroをBOOTSELモードにし、表示された`RPI-RP2`ドライブへUF2をコピーします。基板がない現段階では書き込みと実キー検証をIssue #10の完了証拠にはしません。
 
@@ -57,6 +60,7 @@ nix shell nixpkgs#qmk -c ./scripts/build-qmk.sh /tmp/qmk_firmware
 - GP0–GP11の重複なし割り当て
 - `CUSTOM_MATRIX = lite`
 - 入力pull-upへの中立化と1 µs待ち
+- topology固有のghost-risk filterとQMK native tests
 - QMK split transportおよび電源rail依存がないこと
 - ローカルpinとCI pinが同じQMK commitであること
 

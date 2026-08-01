@@ -5,6 +5,8 @@
 - RP2040-Zero向け36キーJapanese duplex custom matrixと初期keymapを追加
 - QMK本体をcommit SHAへ固定し、ローカル/CIのUF2再現ビルドを追加
 - QMK lint、GPIO/論理matrix静的検査、GPL-2.0-or-later通知を追加
+- 全36位置、抜線、方向安全性、ghost経路を検査するQMK GoogleTestを追加
+- 曖昧な交互ダイオード経路を半分単位で保留する保守的ghost filterを追加
 
 ## 0.2.0 - 2026-08-01
 
