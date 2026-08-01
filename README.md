@@ -5,14 +5,17 @@
 初号機の設計目標は、`1 MCU + 8P8C（通称RJ45）+ 右側完全パッシブ`です。中央ケーブルへVCCを流さず、TRRSで問題になる挿抜中のVCC–GND短絡経路を構造的に除きます。
 
 > [!WARNING]
-> このリポジトリは調査資料、SPICEモデル、開発Issueをまとめた設計開始点です。製造可能なKiCad基板や完成済みファームウェアではなく、活線挿抜、ESD、誤配線、PoE誤接続への安全性も実機では未検証です。PCのUSBポートを故意に短絡する試験には使用しないでください。
+> このリポジトリにはERC合格済みの参照回路がありますが、製造可能なPCBや完成済みファームウェアではありません。活線挿抜、ESD、誤配線、PoE誤接続への安全性も実機では未検証です。PCのUSBポートを故意に短絡する試験には使用しないでください。
 
 ## 現在の成果物
 
-- 36/42キー向けJapanese duplex matrixと8P8Cピン割り当て案
+- 初号機36キー向けJapanese duplex matrixと8P8Cピン割り当て
+- 36キーmatrix、GPIO0–11、中央無給電、470 Ω、両端TVSを確定したKiCad 10参照回路
+- KiCad XML netlistによる中央電源禁止、部品、極性の構造検査とnegative test
 - Kinesisの原則を取り入れた、調整可能な36キー・Choc v1レイアウト
 - TRRS、8P8C、USB-C、無線方式の比較
 - GPIO直列抵抗、TRRS相当短絡、接点バウンスの教育用ngspiceモデル
+- 220/330/470 Ω、2 mケーブル、GPIO閾値、passive PoE境界の選定用ngspiceモデル
 - KiCadから実機評価までの安全チェックリスト
 - GitHubへ登録する13件のIssue定義と冪等な登録スクリプト
 - KiCad ERC/DRC用とスターター検証用のGitHub Actions
@@ -42,8 +45,9 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 11. [KiCad 10開発環境とスモークテスト](docs/10-kicad-environment.md)
 12. [CachyOSツールチェーン環境](docs/11-toolchain-environment.md)
 13. [検証処理の並列化と性能](docs/12-validation-performance.md)
-14. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
-15. [Architecture Decision Records](docs/adr/README.md)
+14. [36キーmatrix、8P8C pinout、保護回路、安全性](docs/13-matrix-rj45-safety.md)
+15. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+16. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -59,6 +63,9 @@ make validate
 
 `make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
 
+`make validate-hardware`は参照回路のXML netlistも検査し、8P8Cへ電源netが入っていないこと、
+470 Ωが6本あること、全36キーのダイオード極性、左右両端のTVS接続を確認します。
+
 CachyOSでホストへ恒久インストールせず試す場合は、Nixの一時環境を利用できます。
 
 ```bash
@@ -72,6 +79,7 @@ ngspice -b spice/trrs-vcc-short.cir
 ngspice -b spice/gpio-series-resistors.cir
 ngspice -b spice/passive-connector-bounce.cir
 ngspice -b spice/rc-transient.cir
+ngspice -b hardware/sim/rj45-protection-selection.cir
 ```
 
 レイアウトJSONだけを再生成・検証する場合:
@@ -117,7 +125,7 @@ docs/                  調査、設計、安全性、レイアウト、一次資
 issues/                GitHub Issue定義
 spice/                 教育用ngspiceモデル
 scripts/               検証、Issue登録、Release梱包
-hardware/              将来のKiCadプロジェクト
+hardware/              KiCad参照回路、選定用SPICE、回路生成器
 firmware/              将来のQMK定義
 case/                  将来のケース/プレートCAD
 .github/workflows/     スターター検証とERC/DRC
@@ -125,6 +133,6 @@ case/                  将来のケース/プレートCAD
 
 ## ライセンス
 
-現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。Chocofiの座標を基準にしたレイアウト生成物、プロファイル、生成スクリプトは[CERN-OHL-P-2.0と第三者通知](docs/layout/THIRD_PARTY_NOTICES.md)に従います。将来追加するQMK派生コードや第三者のフットプリント・モデルも、各上流ライセンスを維持し、必要ならディレクトリ単位のライセンスを追加します。
+現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。Chocofiの座標を基準にしたレイアウト生成物、プロファイル、生成スクリプトは[CERN-OHL-P-2.0と第三者通知](docs/layout/THIRD_PARTY_NOTICES.md)に従います。KiCad標準ライブラリと回路生成器の由来は[hardwareの第三者通知](hardware/THIRD_PARTY_NOTICES.md)に記録しています。将来追加するQMK派生コードや第三者のフットプリント・モデルも、各上流ライセンスを維持します。
 
 Cheapinoなどの参照先は設計上の比較資料であり、その設計ファイルをこのリポジトリへ複製してはいません。

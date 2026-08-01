@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.2.0 - 2026-08-01
+
+- 36キーJapanese duplex matrix、GPIO0–11、ダイオード極性をKiCad 10参照回路へ実装
+- 中央8P8CをGND 2本 + 信号6本に固定し、電源netを構造検査で禁止
+- 6本のPanasonic ERJ3EKF4700V（470 Ω）と左右両端のTI TPD4E05U06DQAを採用
+- 220/330/470 Ωのrise、HIGH/LOW、故障電流と24/48 V誤給電境界をngspiceで比較
+- KiCad XML netlist検査とVBUS/抵抗値のnegative testをhardware validationへ追加
+- matrix mapping、部品型番、crossover/LAN/PoE故障分析、安全性の限界を文書化
+- ADR 0003とNotebookLM統合Markdownを追加
+
 - Kinesisの原則を取り入れた36キー・Choc v1の調整可能レイアウトADRを追加
 - mm単位の正本JSON、KLE JSON、制限付きプロファイル、再生成・不変条件検証を追加
 - concave keywellと0°/10°/20° tentingを実機比較する追跡Issueを追加

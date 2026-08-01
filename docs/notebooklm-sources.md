@@ -12,6 +12,7 @@
 
 ## ドキュメント
 - https://docs.qmk.fm/ — custom matrix、RP2040 対応のページを個別追加
+- https://docs.qmk.fm/custom_matrix — COL2ROW/ROW2COL併用matrixのcustom scan
 - https://docs.kicad.org/ — KiCad 10 マニュアル (特にシミュレータ章)
 - https://kibot.readthedocs.io/ — CI での出力自動化
 - サリチル酸ブログ「自作キーボード温泉街の歩き方」 — 設計ノウハウ / ビルドガイドカテゴリから該当記事を個別 URL で追加
@@ -19,8 +20,14 @@
 ## データシート (PDF をダウンロードして追加)
 - https://www.kailhswitch.com/info/kailh-kl-switches-pg1350-series-23772219.html — Choc v1 PG1350のメーカー型番一覧
 - https://www.kailhswitch.com/uploads/15927/files/CPG135001S30.pdf — Choc v1ホットスワップ接点CPG135001S30のメーカー図面
-- RP2040 Datasheet / Hardware design with RP2040 (Raspberry Pi 公式)
-- 採用する TVS アレイのデータシート
+- https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf — GPIO閾値、pull、drive、合計電流
+- https://files.waveshare.com/upload/4/4c/RP2040_Zero.pdf — RP2040-Zero回路図とpinout
+- https://www.ti.com/lit/ds/symlink/tpd4e05u06.pdf — 採用TVS TPD4E05U06DQA
+- https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF4700V — 採用470 Ω
+- https://www.diodes.com/datasheet/download/1N4148W.pdf — 採用matrix diode 1N4148W-7-F
+- https://catalog.belden.com/techdata/EN/1583E_techdata.pdf — 2 m cable R/Cモデルの根拠
+- https://ethernetalliance.org/wp-content/uploads/2018/04/WP_EA_Overview8023bt_FINAL.pdf — IEEE PoE detection
+- https://dl.ui.com/qsg/EP-24V-72W/EP-24V-72W_EN.html — 24 V passive PoEの実例
 - (将来 USB-C 中央接続に進む場合) TI TUSB320, TPS2553
 
 ## 運用メモ

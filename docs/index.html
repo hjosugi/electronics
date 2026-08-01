@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="1 MCU、8P8C、パッシブ右側方式の分割キーボード設計と、調整可能な36キーChoc v1レイアウトの公開資料">
+      content="1 MCU、中央無給電8P8C、470Ωと両端TVS、パッシブ右側方式の分割キーボード参照回路と36キーChoc v1レイアウト">
     <title>Split Keyboard Engineering Notes</title>
     <link rel="canonical" href="https://hjosugi.github.io/electronics/">
     <link rel="stylesheet" href="assets/document.css">
@@ -21,6 +21,7 @@
         </a>
         <nav aria-label="主要リンク">
           <a href="layout/README.md">レイアウト</a>
+          <a href="13-matrix-rj45-safety.md">回路と安全性</a>
           <a href="adr/README.md">ADR</a>
           <a href="08-roadmap.md">ロードマップ</a>
           <a href="https://github.com/hjosugi/electronics/issues">Issues</a>
@@ -46,7 +47,7 @@
         </div>
 
         <aside class="architecture" aria-label="推奨アーキテクチャ">
-          <p class="architecture-label">v0.1 architecture</p>
+          <p class="architecture-label">v0.2 reference circuit</p>
           <pre><code>PC
 └─ USB ─ Left RP2040
           └─ signal + GND
@@ -54,8 +55,42 @@
                 └─ Passive right
 
 Center cable:
+GND x2 + signal x6
+470R x6 + dual-ended TVS
 NO VCC / 5V / 3V3 / RAW</code></pre>
         </aside>
+      </section>
+
+      <section class="section container" aria-labelledby="circuit-title">
+        <div class="section-heading">
+          <p class="eyebrow">REFERENCE CIRCUIT</p>
+          <h2 id="circuit-title">回路の形と、安全と言える範囲を同じ場所に置く</h2>
+          <p>
+            36キーJapanese duplex matrix、GPIO0–11、8P8C pinout、470 Ω、
+            TPD4E05U06DQAをKiCad 10へ実装しました。ERCだけでなくXML netlistを検査し、
+            中央電源の混入と抵抗値の変更をnegative testで拒否します。
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3>中央無給電</h3>
+            <p>pin 1/8はGND、pin 2–7は右matrix信号です。VCC、VBUS、5V、3V3、RAWは禁止します。</p>
+          </article>
+          <article class="card">
+            <h3>故障電流を低減</h3>
+            <p>6本へ470 Ωを入れ、モデル上の単線GND故障を6.666 mAへ抑えます。GPIO無損傷の保証ではありません。</p>
+          </article>
+          <article class="card">
+            <h3>PoEは保護対象外</h3>
+            <p>24 Vでも470 Ωは約1.23 W相当です。SPLIT ONLY / NO LANと専用ストレートケーブルを必須にします。</p>
+          </article>
+        </div>
+
+        <div class="actions">
+          <a class="button button-primary" href="13-matrix-rj45-safety.md">回路と故障分析を読む</a>
+          <a class="button button-secondary" href="adr/0003-use-470-ohm-and-dual-ended-tvs.md">ADR 0003を読む</a>
+        </div>
       </section>
 
       <section class="section container" aria-labelledby="decisions-title">
@@ -151,6 +186,7 @@ make validate</code></pre>
           <li><a href="03-simulation-guide.md">OSS回路シミュレーション手順</a></li>
           <li><a href="05-hardware-validation.md">実機検証チェックリスト</a></li>
           <li><a href="07-sources.md">一次資料と更新日</a></li>
+          <li><a href="13-matrix-rj45-safety.md">36キーmatrixと8P8C保護回路</a></li>
           <li><a href="adr/0002-use-36-key-choc-v1-layout.md">レイアウト決定ADR</a></li>
         </ol>
       </section>
