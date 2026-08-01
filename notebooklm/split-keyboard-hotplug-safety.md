@@ -1012,7 +1012,7 @@ Issue原稿とGitHub本文に差が出た場合、最新の設計判断をADRま
 
 ## 教育用ngspiceモデルの基準結果
 
-実行日: 2026-07-31
+実行日: 2026-08-01
 実行環境: ngspice 45（Nix `nixpkgs#ngspice`）
 
 ## 再現コマンド
