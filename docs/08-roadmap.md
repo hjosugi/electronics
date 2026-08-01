@@ -2,7 +2,7 @@
 
 ## なぜIssueへ分けるのか
 
-現在のリポジトリは、方式選定と検証方法をまとめたスターターです。製造可能なKiCad基板やQMKファームウェアがまだないため、「文書が丁寧だから完成」とは扱いません。
+現在のリポジトリには参照回路と初期QMK定義がありますが、製造可能なPCBと実機評価はまだありません。「文書やCIが丁寧だから完成」とは扱いません。
 
 未完成作業は[GitHub Issues](https://github.com/hjosugi/electronics/issues)と[`issues/`](../issues/)の原稿で追跡します。各Issueには、背景、作業、客観的な完了条件があります。
 
@@ -15,7 +15,7 @@
 | 03 repo初期化 | 文書、SPICE、CI、Issueを公開する | main SHA、PUBLIC読戻し、Issue一覧 |
 | 04 ERC/DRC CI | 回路変更ごとの機械検査 | 意図的violationでCIが失敗する証拠 |
 
-Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 04は[PR #15](https://github.com/hjosugi/electronics/pull/15)で意図的violationの検出を確認済みです。Issue 02はローカルUF2ができるまで完了扱いにしません。
+Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 04は[PR #15](https://github.com/hjosugi/electronics/pull/15)で意図的violationの検出を確認済みです。Issue 02は固定QMK commitからのローカルUF2とCI artifactを完了証拠にします。
 
 ## フェーズ1: 要件と回路
 
@@ -43,6 +43,8 @@ ngspice感度解析は合格済みです。これはPCB、QMK、活線挿抜、I
 | --- | --- | --- |
 | 09 protection | R/L/C、直列抵抗、TVS、GPIO閾値 | 候補値の根拠と感度解析 |
 | 10 firmware | Japanese duplex走査、抜線、ghosting | QMK自動テスト + 2 × 2実機 |
+
+Issue 02では、RP2040用の初期36キー定義、固定QMK commit、ローカルUF2、CI artifactを[ファームウェア環境](14-qmk-firmware.md)へ記録します。これはIssue 10の同時押し、抜線、ghosting、2 × 2実機検証を先取りしません。
 
 SPICEとQMKテストは別の証拠です。SPICEは電圧・電流を検証し、QMKテストはキー状態を検証します。片方の合格で他方を省略しません。
 

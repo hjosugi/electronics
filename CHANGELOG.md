@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- RP2040-Zero向け36キーJapanese duplex custom matrixと初期keymapを追加
+- QMK本体をcommit SHAへ固定し、ローカル/CIのUF2再現ビルドを追加
+- QMK lint、GPIO/論理matrix静的検査、GPL-2.0-or-later通知を追加
+
 ## 0.2.0 - 2026-08-01
 
 - 36キーJapanese duplex matrix、GPIO0–11、ダイオード極性をKiCad 10参照回路へ実装

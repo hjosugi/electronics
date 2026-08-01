@@ -5,7 +5,7 @@
 初号機の設計目標は、`1 MCU + 8P8C（通称RJ45）+ 右側完全パッシブ`です。中央ケーブルへVCCを流さず、TRRSで問題になる挿抜中のVCC–GND短絡経路を構造的に除きます。
 
 > [!WARNING]
-> このリポジトリにはERC合格済みの参照回路がありますが、製造可能なPCBや完成済みファームウェアではありません。活線挿抜、ESD、誤配線、PoE誤接続への安全性も実機では未検証です。PCのUSBポートを故意に短絡する試験には使用しないでください。
+> このリポジトリにはERC合格済みの参照回路とビルド可能な初期QMK定義がありますが、製造可能なPCBや実機検証済みファームウェアではありません。活線挿抜、ESD、誤配線、PoE誤接続への安全性も実機では未検証です。PCのUSBポートを故意に短絡する試験には使用しないでください。
 
 ## 現在の成果物
 
@@ -19,6 +19,7 @@
 - KiCadから実機評価までの安全チェックリスト
 - GitHubへ登録する13件のIssue定義と冪等な登録スクリプト
 - KiCad ERC/DRC用とスターター検証用のGitHub Actions
+- RP2040-Zero向け36キーcustom matrix、固定QMK commit、UF2ビルドCI
 
 ## 推奨アーキテクチャ
 
@@ -46,8 +47,9 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 12. [CachyOSツールチェーン環境](docs/11-toolchain-environment.md)
 13. [検証処理の並列化と性能](docs/12-validation-performance.md)
 14. [36キーmatrix、8P8C pinout、保護回路、安全性](docs/13-matrix-rj45-safety.md)
-15. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
-16. [Architecture Decision Records](docs/adr/README.md)
+15. [RP2040 QMKファームウェア環境](docs/14-qmk-firmware.md)
+16. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+17. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -61,7 +63,7 @@ ngspiceが導入済みなら、全チェックを実行できます。
 make validate
 ```
 
-`make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
+`make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、QMK定義、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
 
 `make validate-hardware`は参照回路のXML netlistも検査し、8P8Cへ電源netが入っていないこと、
 470 Ωが6本あること、全36キーのダイオード極性、左右両端のTVS接続を確認します。
@@ -108,6 +110,12 @@ KiCad 10環境、空回路ERC、RC過渡解析をまとめて確認する手順�
 
 現在のKiCad/ngspice/QMK導入状態は`make environment`で確認できます。確認済みパッケージ版、3Dライブラリ容量、エージェント環境の制約は[ツールチェーン環境](docs/11-toolchain-environment.md)に記録しています。
 
+固定したQMK checkoutからUF2を作る手順は[QMKファームウェア環境](docs/14-qmk-firmware.md)にあります。
+
+```bash
+QMK_HOME=/path/to/qmk_firmware make build-qmk
+```
+
 ## Issue
 
 `issues/*.md`はGitHub Issuesの再現可能な正本です。各ファイルは1行目がタイトル、2行目がラベル、3行目以降が本文です。
@@ -126,13 +134,13 @@ issues/                GitHub Issue定義
 spice/                 教育用ngspiceモデル
 scripts/               検証、Issue登録、Release梱包
 hardware/              KiCad参照回路、選定用SPICE、回路生成器
-firmware/              将来のQMK定義
+firmware/qmk/          RP2040 QMK overlay（GPL-2.0-or-later）
 case/                  将来のケース/プレートCAD
 .github/workflows/     スターター検証とERC/DRC
 ```
 
 ## ライセンス
 
-現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。Chocofiの座標を基準にしたレイアウト生成物、プロファイル、生成スクリプトは[CERN-OHL-P-2.0と第三者通知](docs/layout/THIRD_PARTY_NOTICES.md)に従います。KiCad標準ライブラリと回路生成器の由来は[hardwareの第三者通知](hardware/THIRD_PARTY_NOTICES.md)に記録しています。将来追加するQMK派生コードや第三者のフットプリント・モデルも、各上流ライセンスを維持します。
+現在収録している独自の文書、スクリプト、SPICEモデルは[MIT License](LICENSE)です。Chocofiの座標を基準にしたレイアウト生成物、プロファイル、生成スクリプトは[CERN-OHL-P-2.0と第三者通知](docs/layout/THIRD_PARTY_NOTICES.md)に従います。KiCad標準ライブラリと回路生成器の由来は[hardwareの第三者通知](hardware/THIRD_PARTY_NOTICES.md)に記録しています。`firmware/qmk/`のQMK向けコードはGPL-2.0-or-laterです。第三者のフットプリント・モデルも各上流ライセンスを維持します。
 
 Cheapinoなどの参照先は設計上の比較資料であり、その設計ファイルをこのリポジトリへ複製してはいません。

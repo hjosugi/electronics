@@ -11,8 +11,12 @@
 - https://github.com/sekigon-gonnoc/auto-kdk — 自動生成系。誤った USB 接続による破損警告も反面教師として
 
 ## ドキュメント
-- https://docs.qmk.fm/ — custom matrix、RP2040 対応のページを個別追加
+- https://docs.qmk.fm/newbs_getting_started — QMK CLIのsetupとcompile
+- https://docs.qmk.fm/platformdev_rp2040 — RP2040のGPIO名、UF2、5 V非対応
 - https://docs.qmk.fm/custom_matrix — COL2ROW/ROW2COL併用matrixのcustom scan
+- https://docs.qmk.fm/reference_info_json — processor、bootloader、layout metadata
+- https://github.com/qmk/qmk_firmware/tree/4ffb1ab16c443f2def5949d39b56057c0c88c88b — UF2合格時に固定したQMK本体
+- https://github.com/tompi/qmk_firmware/blob/cheapino/keyboards/cheapino/matrix.c — Cheapinoの双方向走査（比較資料）
 - https://docs.kicad.org/ — KiCad 10 マニュアル (特にシミュレータ章)
 - https://kibot.readthedocs.io/ — CI での出力自動化
 - サリチル酸ブログ「自作キーボード温泉街の歩き方」 — 設計ノウハウ / ビルドガイドカテゴリから該当記事を個別 URL で追加

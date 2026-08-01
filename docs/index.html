@@ -22,6 +22,7 @@
         <nav aria-label="主要リンク">
           <a href="layout/README.md">レイアウト</a>
           <a href="13-matrix-rj45-safety.md">回路と安全性</a>
+          <a href="14-qmk-firmware.md">QMK</a>
           <a href="adr/README.md">ADR</a>
           <a href="08-roadmap.md">ロードマップ</a>
           <a href="https://github.com/hjosugi/electronics/issues">Issues</a>
@@ -90,6 +91,39 @@ NO VCC / 5V / 3V3 / RAW</code></pre>
         <div class="actions">
           <a class="button button-primary" href="13-matrix-rj45-safety.md">回路と故障分析を読む</a>
           <a class="button button-secondary" href="adr/0003-use-470-ohm-and-dual-ended-tvs.md">ADR 0003を読む</a>
+        </div>
+      </section>
+
+      <section class="section section-tinted" aria-labelledby="firmware-title">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">REPRODUCIBLE FIRMWARE</p>
+            <h2 id="firmware-title">固定QMK commitからRP2040 UF2を作る</h2>
+            <p>
+              3 × 12の論理matrixとして左右36キーを走査します。QMK split transportや
+              中央ケーブルの電源railは使わず、GP0–GP11を参照回路と一致させます。
+            </p>
+          </div>
+
+          <div class="card-grid">
+            <article class="card">
+              <h3>Japanese duplex</h3>
+              <p>Bankごとに方向を切り替え、全6線を入力pull-upへ戻してから1本だけLow駆動します。</p>
+            </article>
+            <article class="card">
+              <h3>固定して再現</h3>
+              <p>QMK本体を完全なcommit SHAへ固定し、ローカルとCIで同じoverlayをlint・compileします。</p>
+            </article>
+            <article class="card">
+              <h3>証拠を分離</h3>
+              <p>UF2生成は合格済みです。実キー、ghosting、活線挿抜は後続Issueで検証します。</p>
+            </article>
+          </div>
+
+          <div class="actions">
+            <a class="button button-primary" href="14-qmk-firmware.md">QMK環境と合格記録を読む</a>
+            <a class="button button-secondary" href="https://github.com/hjosugi/electronics/tree/main/firmware/qmk">firmware source</a>
+          </div>
         </div>
       </section>
 
@@ -187,6 +221,7 @@ make validate</code></pre>
           <li><a href="05-hardware-validation.md">実機検証チェックリスト</a></li>
           <li><a href="07-sources.md">一次資料と更新日</a></li>
           <li><a href="13-matrix-rj45-safety.md">36キーmatrixと8P8C保護回路</a></li>
+          <li><a href="14-qmk-firmware.md">RP2040 QMKファームウェア環境</a></li>
           <li><a href="adr/0002-use-36-key-choc-v1-layout.md">レイアウト決定ADR</a></li>
         </ol>
       </section>

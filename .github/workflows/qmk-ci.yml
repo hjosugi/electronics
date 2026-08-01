@@ -1,0 +1,56 @@
+name: qmk-ci
+
+on:
+  push:
+    paths:
+      - "firmware/qmk/**"
+      - "scripts/build-qmk.sh"
+      - "scripts/check-qmk-source.py"
+      - ".github/workflows/qmk-ci.yml"
+  pull_request:
+    paths:
+      - "firmware/qmk/**"
+      - "scripts/build-qmk.sh"
+      - "scripts/check-qmk-source.py"
+      - ".github/workflows/qmk-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qmk-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  QMK_REF: 4ffb1ab16c443f2def5949d39b56057c0c88c88b
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli:latest
+    steps:
+      - name: Allow container checkout
+        run: git config --global --add safe.directory '*'
+      - name: Checkout electronics
+        uses: actions/checkout@v6
+        with:
+          path: electronics
+      - name: Checkout pinned QMK
+        uses: actions/checkout@v6
+        with:
+          repository: qmk/qmk_firmware
+          ref: ${{ env.QMK_REF }}
+          path: qmk_firmware
+          submodules: recursive
+      - name: Validate overlay
+        run: python3 electronics/scripts/check-qmk-source.py
+      - name: Compile UF2
+        run: electronics/scripts/build-qmk.sh "$GITHUB_WORKSPACE/qmk_firmware"
+      - name: Upload UF2 evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: electronics-splitkb36-${{ github.sha }}
+          path: electronics/dist/qmk/*.uf2
+          if-no-files-found: error
+          retention-days: 14
