@@ -1,0 +1,98 @@
+* 8P8C remote-matrix protection sensitivity model.
+* This is not an ESD, transmission-line, or RP2040 qualification model.
+*
+* Assumptions used only for comparison:
+*   GPIO Thevenin resistance: 25 ohm (model assumption, not a datasheet limit)
+*   2 m cable + connector lumped capacitance: 120 pF
+*   RP2040 I/O timing nominal load: 5 pF (datasheet test condition)
+*   TPD4E05U06 at both cable ends: 2 x 0.5 pF typical
+*   cable/contact series resistance: 1 ohm
+
+Vstep220 src220 0 PULSE(0 3.3 1u 100p 100p 2u 5u)
+Rout220 src220 gpio220 25
+Rseries220 gpio220 cable220 220
+Rcable220 cable220 right220 1
+Cload220 right220 0 126p
+Rinput220 right220 0 80k
+
+Vstep330 src330 0 PULSE(0 3.3 1u 100p 100p 2u 5u)
+Rout330 src330 gpio330 25
+Rseries330 gpio330 cable330 330
+Rcable330 cable330 right330 1
+Cload330 right330 0 126p
+Rinput330 right330 0 80k
+
+Vstep470 src470 0 PULSE(0 3.3 1u 100p 100p 2u 5u)
+Rout470 src470 gpio470 25
+Rseries470 gpio470 cable470 470
+Rcable470 cable470 right470 1
+Cload470 right470 0 126p
+Rinput470 right470 0 80k
+
+* Closed-key LOW read using the strongest RP2040 pull-up (50 kohm).
+* Both the driven and sensed cable lines pass through their own candidate resistor.
+* The diode is a documented approximation, not a vendor qualification model.
+Vpull pull 0 3.3
+.model KEY_DIODE D(Is=4.35n Rs=0.645 N=1.906 Cjo=2p Tt=4n)
+
+Rpull220 pull lowreadgpio220 50k
+Rlowsense220 lowreadgpio220 lowreadcable220 220
+Dkey220 lowreadcable220 lowdrivecable220 KEY_DIODE
+Rlowdrive220 lowdrivecable220 lowdrivegpio220 220
+Rlowout220 lowdrivegpio220 0 25
+
+Rpull330 pull lowreadgpio330 50k
+Rlowsense330 lowreadgpio330 lowreadcable330 330
+Dkey330 lowreadcable330 lowdrivecable330 KEY_DIODE
+Rlowdrive330 lowdrivecable330 lowdrivegpio330 330
+Rlowout330 lowdrivegpio330 0 25
+
+Rpull470 pull lowreadgpio470 50k
+Rlowsense470 lowreadgpio470 lowreadcable470 470
+Dkey470 lowreadcable470 lowdrivecable470 KEY_DIODE
+Rlowdrive470 lowdrivecable470 lowdrivegpio470 470
+Rlowout470 lowdrivegpio470 0 25
+
+* Cable-side signal-to-GND faults after each candidate MCU-side resistor.
+Vfaultsrc220 faultsrc220 0 3.3
+Rfaultout220 faultsrc220 faultgpio220 25
+Rfaultseries220 faultgpio220 faultline220 220
+Sfault220 faultline220 0 faultctl 0 FAULT_CONTACT
+Vfaultsrc330 faultsrc330 0 3.3
+Rfaultout330 faultsrc330 faultgpio330 25
+Rfaultseries330 faultgpio330 faultline330 330
+Sfault330 faultline330 0 faultctl 0 FAULT_CONTACT
+Vfaultsrc470 faultsrc470 0 3.3
+Rfaultout470 faultsrc470 faultgpio470 25
+Rfaultseries470 faultgpio470 faultline470 470
+Sfault470 faultline470 0 faultctl 0 FAULT_CONTACT
+Vfaultctl faultctl 0 PULSE(0 1 1u 1n 1n 1u 5u)
+.model FAULT_CONTACT SW(Ron=0.05 Roff=1e12 Vt=0.5 Vh=0.1)
+
+* Passive PoE examples against the selected 470 ohm part show the boundary;
+* these are not tests, and the 0.1 W part cannot survive these powers.
+Vpoe24 poe24 0 24
+Rpoe24 poe24 0 470
+Vpoe48 poe48 0 48
+Rpoe48 poe48 0 470
+
+.tran 100p 4u
+.meas tran rise_220_s TRIG v(right220) VAL=0.33 RISE=1 TARG v(right220) VAL=2.97 RISE=1
+.meas tran rise_330_s TRIG v(right330) VAL=0.33 RISE=1 TARG v(right330) VAL=2.97 RISE=1
+.meas tran rise_470_s TRIG v(right470) VAL=0.33 RISE=1 TARG v(right470) VAL=2.97 RISE=1
+.meas tran high_220_v FIND v(right220) AT=2u
+.meas tran high_330_v FIND v(right330) AT=2u
+.meas tran high_470_v FIND v(right470) AT=2u
+.meas tran low_220_v FIND v(lowreadgpio220) AT=2u
+.meas tran low_330_v FIND v(lowreadgpio330) AT=2u
+.meas tran low_470_v FIND v(lowreadgpio470) AT=2u
+.meas tran fault_220_a MAX par('-i(Vfaultsrc220)') FROM=1u TO=2u
+.meas tran fault_330_a MAX par('-i(Vfaultsrc330)') FROM=1u TO=2u
+.meas tran fault_470_a MAX par('-i(Vfaultsrc470)') FROM=1u TO=2u
+.meas tran six_faults_470_a PARAM='fault_470_a*6'
+.meas tran poe_24_a FIND par('-i(Vpoe24)') AT=2u
+.meas tran poe_48_a FIND par('-i(Vpoe48)') AT=2u
+.meas tran poe_24_resistor_w PARAM='poe_24_a*poe_24_a*470'
+.meas tran poe_48_resistor_w PARAM='poe_48_a*poe_48_a*470'
+
+.end

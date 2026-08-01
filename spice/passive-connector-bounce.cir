@@ -3,7 +3,7 @@
 
 Vgpio gpio_supply 0 DC 3.3
 Rgpio gpio_supply gpio_pin 25
-Rseries gpio_pin connector_left 330
+Rseries gpio_pin connector_left 470
 
 Vcontact_ctl contact_ctl 0 PWL(
 + 0 0

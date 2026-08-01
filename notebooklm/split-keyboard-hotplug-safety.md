@@ -33,7 +33,7 @@ PC
 ┌──────────────────────── 左側 ────────────────────────┐
 │ RP2040 ─ キーマトリクス                              │
 │    │                                                 │
-│    └─ 330 Ω × 6本または7本 ─ 8P8Cコネクタ           │
+│    └─ 470 Ω × 6本または7本 ─ 8P8Cコネクタ           │
 └──────────────────────────┬───────────────────────────┘
                            │ ストレートケーブル
                            │ GND + マトリクス線のみ
@@ -167,20 +167,20 @@ GNDを設けただけでESD対策が完了するわけではありません。TV
 MCUのGPIOと8P8Cコネクタの間に、各信号1本ずつ直列抵抗を入れます。
 
 ```text
-RP2040 GPIO ── 330 Ω ── 8P8C ── ケーブル ── 右側スイッチ行列
+RP2040 GPIO ── 470 Ω ── 8P8C ── ケーブル ── 右側スイッチ行列
 ```
 
-初期値は330 Ωを推奨します。3.3 Vが理想的にGNDへ短絡した単純計算では、抵抗だけで制限される電流は次の値です。
+初号機の採用値は470 Ωです。3.3 Vが理想的にGNDへ短絡した単純計算では、抵抗だけで制限される電流は次の値です。
 
 | 直列抵抗 | `3.3 V / R` | 備考 |
 | ---: | ---: | --- |
 | 220 Ω | 15.0 mA | MCUによっては大きい。無条件には推奨しない |
-| 330 Ω | 10.0 mA | 初期候補 |
-| 470 Ω | 7.0 mA | より低電流。信号立上りを確認する |
+| 330 Ω | 10.0 mA | 比較候補 |
+| 470 Ω | 7.0 mA | 採用。信号立上りと入力閾値はngspiceと実機で確認する |
 
 実際にはGPIO出力抵抗、ケーブル抵抗、接点抵抗も直列に入ります。一方、MCUの許容値は「設定できるドライブ強度」「通常動作条件」「絶対最大定格」「全GPIO合計」で意味が異なります。上表だけで安全判定せず、採用MCUと実装ボードのデータシートに照らします。
 
-Japanese duplexで2本のGPIOが逆レベルを駆動して競合した場合、電流経路には原則として両側の直列抵抗が入ります。330 Ωを2本通る理想計算なら約5 mA以下になります。ただし、基板上の短絡が抵抗よりMCU側で起きた場合は保護されないため、抵抗はコネクタの近くではなく、信号源であるMCUと外部配線の間に確実に置きます。
+Japanese duplexで2本のGPIOが逆レベルを駆動して競合した場合、電流経路には原則として両側の直列抵抗が入ります。470 Ωを2本通る理想計算なら約3.5 mA以下になります。ただし、基板上の短絡が抵抗よりMCU側で起きた場合は保護されないため、抵抗はコネクタの近くではなく、信号源であるMCUと外部配線の間に確実に置きます。
 
 ## TVSアレイ
 
@@ -350,7 +350,7 @@ GND  ─────────────────────────
 キーボード全体を一度に再現しようとせず、故障モードごとに小さな回路を作ります。
 
 - VCCとGNDが50 µs触れたら、電源電流はどの経路を流れるか
-- GPIOがGNDへ触れたら、330 Ωでどこまで電流を下げられるか
+- GPIOがGNDへ触れたら、220/330/470 Ωでどこまで電流を下げられるか
 - コネクタ接点が100 µs単位でバウンスしたら、入力波形はどうなるか
 - 右側を抜いたとき、給電された容量性負荷が残るか
 - シミュレーションへ入れていない保護機能は何か
@@ -376,7 +376,7 @@ GND  ─────────────────────────
 ### GPIO直列抵抗
 
 ```text
-3.3 V ─ GPIO出力抵抗相当25 Ω ─ 330 Ω ─ switch ─ GND
+3.3 V ─ GPIO出力抵抗相当25 Ω ─ 候補抵抗 ─ switch ─ GND
 ```
 
 直列抵抗を0、100、220、330、470 Ωへ変えます。電流の桁を比較してください。GPIO出力段の25 Ωも教育用仮定で、RP2040の保証値ではありません。
@@ -494,7 +494,7 @@ SPICEはアナログ電気特性を扱う道具で、RP2040のCPU、USB、PIO、
 
 ## 共通の考え方
 
-3つのネットリストは、実製品を完全再現するものではありません。比較したい危険経路だけを小さく切り出しています。
+5つのネットリストは、実製品を完全再現するものではありません。比較したい危険経路だけを小さく切り出しています。
 
 モデル値には次の仮定を使います。
 
@@ -553,7 +553,7 @@ I ≈ 3.3 V / (25 Ω + Rseries + 0.05 Ω)
 ### モデル化した動作
 
 - 左側GPIOが1 MHzより十分遅いテスト用矩形波を出す
-- 330 Ωを通ってコネクタへ向かう
+- 採用値470 Ωを通ってコネクタへ向かう
 - コネクタは複数回ON/OFFしてから接続状態になる
 - 右側は300 pFと100 kΩの受動負荷だけ
 - VCC線は存在しない
@@ -568,6 +568,18 @@ I ≈ 3.3 V / (25 Ω + Rseries + 0.05 Ω)
 - 接点バウンスが収まった後に定常状態へ戻ること
 
 実ケーブルの容量をLCRメータで測ったら、`Ccable`を置き換えて再実行します。ケーブル長を変えた試験では、抵抗値だけでなく容量も一緒に記録してください。
+
+## `hardware/sim/rj45-protection-selection.cir`
+
+Issue #9の採用判断用モデルです。220/330/470 Ωについて、ケーブルと両端TVSの容量を加えた立上り、
+pull-upと近似ダイオードを通る閉キーLOW、signal–GND短絡電流を比較します。
+
+2 mケーブルはBelden 1583Eの最大56 pF/mと95 Ω/kmを基礎に、容量120 pF、接点を含む抵抗1 Ωへ丸めています。
+GPIO出力抵抗25 Ωと1N4148Wの近似モデルは保証値ではありません。
+
+同じ回路には24 Vと48 Vを採用値470 Ωへ直接加える枝があります。これはPoE耐性試験ではなく、
+抵抗損失が約1.23 Wと4.90 Wになり、0.1 W部品と低電圧TVSで保護できないことを示す境界確認です。
+LANやPoE機器を接続して再現してはいけません。
 
 ## シミュレーションの合格条件を決める
 
@@ -715,7 +727,7 @@ ngspice 45で確認した測定値、再現コマンド、読み方は[教育用
 | 回路図Git SHA | 40桁SHA |
 | MCU/ボード型番 | メーカー型番まで |
 | ファームウェアGit SHA | 40桁SHA |
-| 直列抵抗 | 330 Ω、許容差1% |
+| 直列抵抗 | 470 Ω、許容差1% |
 | TVS | 型番、実装有無 |
 | ケーブル | 長さ、結線、製品型番 |
 | 電源 | 型番、電流上限 |
@@ -881,6 +893,10 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
   Google Testベースのテストと`make test:all`。
 - [Raspberry Pi: RP2040 Datasheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
   GPIO、電源、絶対最大定格、PIOの一次資料。
+- [Waveshare: RP2040-Zero](https://www.waveshare.com/wiki/RP2040-Zero)
+  公式回路図、pinout、GPIO16のオンボードRGBを確認。
+- [QMK: Custom Matrix](https://docs.qmk.fm/custom_matrix)
+  `COL2ROW`と`ROW2COL`を併用する不規則matrixのcustom scan。
 
 ## 参考キーボード
 
@@ -933,12 +949,29 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
 - [TI: TPD2EUSB30A](https://www.ti.com/product/TPD2EUSB30A)
   2チャネル、3.6 V `VRWM`、低容量ESD保護の選定例。
 
+## 採用する8P8C保護回路
+
+- [TI: TPD4E05U06 datasheet Rev. O](https://www.ti.com/lit/ds/symlink/tpd4e05u06.pdf)
+  4 channel、5.5 V `VRWM`、0.5 pF typical、IEC 61000-4-2部品定格、USON-10 pinout。
+- [Panasonic: ERJ3EKF4700V](https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF4700V)
+  470 Ω、1%、0603、0.100 Wの注文型番。
+- [Diodes Incorporated: 1N4148W DS30086 Rev. 31-2](https://www.diodes.com/datasheet/download/1N4148W.pdf)
+  `1N4148W-7-F`、SOD123、カソード表示、電気特性。
+- [Belden: 1583E technical data](https://catalog.belden.com/techdata/EN/1583E_techdata.pdf)
+  Cat 5eケーブルの最大mutual capacitance 56 pF/m、最大導体DCR 95 Ω/km。
+- [Ethernet Alliance: Overview of IEEE 802.3bt](https://ethernetalliance.org/wp-content/uploads/2018/04/WP_EA_Overview8023bt_FINAL.pdf)
+  PoEのsignature detectionとpairsetへの給電条件。
+- [Ubiquiti: EP-24V-72W](https://dl.ui.com/qsg/EP-24V-72W/EP-24V-72W_EN.html)
+  pin 4/5正、7/8負で24 Vを出すpassive PoE製品の一次資料。
+- [KiCad: Libraries License](https://www.kicad.org/libraries/license/)
+  標準symbol/footprintのCC-BY-SA-4.0と設計ファイル向け例外。
+
 ## 本資料で行った訂正と限定
 
 - `TPS2553 = 逆流を即時遮断`とは書かない。逆電圧検出には代表4 msの遅延がある。
 - `RP2040でPIO full-duplexが使える = USB-C電源が安全`とは扱わない。
 - `8P8Cに電源がない = ESDやPoE誤接続にも安全`とは扱わない。
-- `330 Ωなら常に安全`とは扱わない。MCU定格と信号閾値で再評価する。
+- `470 Ωなら常に安全`とは扱わない。MCU定格と信号閾値で再評価する。
 - `KiCadシミュレーション成功 = 製造可能`とは扱わない。ERC、DRC、導通、実測を別に行う。
 
 
@@ -977,6 +1010,11 @@ Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路E
 Issue 08では、初号機にWaveshare RP2040-Zeroモジュールを採用する判断を[ADR 0001](https://github.com/hjosugi/electronics/blob/main/docs/adr/0001-use-waveshare-rp2040-zero.md)へ記録しました。GPIO割り当て、保護回路、QMK設定の合格を先取りする決定ではありません。
 
 Issue 05では、初号機を36キー、Kailh Choc v1、Chocofi基準の18×17 mm配置、エンコーダなしとする判断を[ADR 0002](../docs/adr/0002-use-36-key-choc-v1-layout.md)へ記録しました。Kinesisの縦列、独立親指クラスタ、分離、段階的tentingという原則を取り入れ、stagger、splay、親指位置、机上フィット値を[制限付きプロファイル](../docs/layout/profiles/balanced-kinesis-inspired.json)から生成します。人体適合、キーキャップ干渉、フットプリント、concave keywellは実機で未検証であり、後続Issueで確認します。
+
+Issue 06、07、09では、36キーduplex matrix、GPIO0–11、中央8P8Cの`GND x2 + signal x6`、
+470 Ω、両端TPD4E05U06DQAを[回路・安全性文書](../docs/13-matrix-rj45-safety.md)と
+[ADR 0003](../docs/adr/0003-use-470-ohm-and-dual-ended-tvs.md)へ確定しました。KiCad 10 ERCとnetlist構造検査、
+ngspice感度解析は合格済みです。これはPCB、QMK、活線挿抜、IEC ESDの完了を先取りしません。
 
 ## フェーズ2: シミュレーションとファームウェア
 
@@ -1067,21 +1105,47 @@ nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
 
 ## パッシブ右側の接点バウンス
 
-`spice/passive-connector-bounce.cir`は、330 Ω、300 pFの仮想ケーブル容量、100 kΩの測定負荷を置き、接点が複数回開閉してから接続する状態を作ります。
+`spice/passive-connector-bounce.cir`は、採用値470 Ω、300 pFの仮想ケーブル容量、100 kΩの測定負荷を置き、接点が複数回開閉してから接続する状態を作ります。
 
 | 測定 | 結果 |
 | --- | ---: |
-| GPIO電源電流ピーク | 8.810050 mA |
-| 接続後の右側電圧 | 3.288325 V |
-| 接続後の左側電圧 | 3.288326 V |
+| GPIO電源電流ピーク | 6.413094 mA |
+| 接続後の右側電圧 | 3.283744 V |
+| 接続後の左側電圧 | 3.283745 V |
 
 モデル内に中央VCCはありません。ただし、これだけでは接続直後の誤キー、ESD、クロストーク、実ケーブルの反射、GPIO競合が安全とは証明できません。
 
+## 8P8C保護回路と470 Ωの選定
+
+`hardware/sim/rj45-protection-selection.cir`は、2 mケーブル120 pF、RP2040のI/O timing試験条件にある
+nominal load 5 pFを比較用負荷として使い、
+両端TPD4E05U06DQA合計1 pF、50 kΩ pull-up、接点込み1 Ω、仮のGPIO出力抵抗25 Ωを使います。
+閉キーLOWは実配線どおりsense側とdrive側の両方へ候補抵抗を入れ、MCU入力pinで測定しています。
+
+| 直列抵抗 | 10–90% rise | HIGH（2 µs） | 閉キーLOW | signal–GND故障電流 |
+| ---: | ---: | ---: | ---: | ---: |
+| 220 Ω | 68.753 ns | 3.289884 V | 0.492783 V | 13.4666 mA |
+| 330 Ω | 99.925 ns | 3.285380 V | 0.504759 V | 9.294466 mA |
+| 470 Ω | 139.995 ns | 3.279666 V | 0.519854 V | 6.665993 mA |
+
+RP2040の3.3 V時入力閾値`VIH >= 2.0 V`、`VIL <= 0.8 V`と1 µsのsettling条件に対し、
+3候補ともこのモデルでは余裕があります。470 Ωはrise 140 nsを維持しながら単線故障を最小にします。
+6線がそれぞれGNDへ短絡する仮定合計は39.996 mAで、330 Ωの55.767 mAと異なりRP2040の
+全GPIO source上限50 mAを下回るため採用しました。これは他GPIO負荷や部品差を含む無損傷保証ではありません。
+
+| 誤給電モデル | 470 Ω電流 | 470 Ω損失 |
+| --- | ---: | ---: |
+| 24 V | 51.064 mA | 1.22553 W |
+| 48 V | 102.128 mA | 4.90213 W |
+
+これはPoEを接続してよいという結果ではなく、0.1 Wの採用抵抗とTPD4E05U06DQAではPoEを保護できない証拠です。
+モデル、採用理由、禁止条件は[ADR 0003](../docs/adr/0003-use-470-ohm-and-dual-ended-tvs.md)に記録しました。
+
 ## 次に置き換える仮定
 
-1. 採用MCUまたはモジュールのGPIO条件とIBISモデル
-2. 実ケーブルのR/L/Cと長さ
-3. 採用TVSのSPICEモデル、容量、漏れ、クランプ特性
+1. RP2040またはモジュール実測から得るGPIO出力インピーダンス
+2. 組み立てに使う実ケーブルのLCR実測値と長さ
+3. 採用TVSのメーカーSPICEモデル、漏れ、クランプ動特性
 4. firmwareのdrive strength、pull、scan周期、sample時刻
 5. 最小・代表・最大条件と温度範囲
 
@@ -1350,6 +1414,242 @@ Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォー�
 ```bash
 make validate-hardware
 ```
+
+
+---
+
+## 36キーJapanese duplex matrixと8P8C保護回路
+
+確認日: 2026-08-01
+
+この文書は、初号機の参照回路
+[`hardware/split-keyboard/split-keyboard.kicad_sch`](../hardware/split-keyboard/split-keyboard.kicad_sch)
+について、GPIO、ダイオード極性、中央ケーブル、保護部品、故障時の境界を定義します。
+KiCad回路図とERCは製造前の設計証拠ですが、PCB配線、活線挿抜、ESD、誤接続に合格したことを意味しません。
+
+## 結論
+
+- 左右はそれぞれ独立した`3 row + 3 column`のJapanese duplex matrixとする
+- 片側18キーを、向きの異なる9キーのBank AとBank Bへ分ける
+- 左側のWaveshare RP2040-Zero 1個だけを使い、右側にMCUと電源を置かない
+- 中央8P8Cは`GND 2本 + 右側matrix信号6本`だけとする
+- 6本の信号にはMCU側で`470 Ω`を直列に入れる
+- 8P8C入口には左右とも`TPD4E05U06DQA`を2個ずつ置く
+- 専用ストレートケーブルだけを使い、`SPLIT ONLY / NO LAN`を基板とケースへ表示する
+- Ethernet、PoE、電話設備、導通不明ケーブルへの接続は禁止する
+
+中央ケーブルに電源がないため、TRRSで起き得るVCC–GNDの擦過短絡経路は存在しません。
+一方、GPIO–GND、GPIO同士の競合、ESD、PoE電圧、コネクタGNDのインダクタンスは残るため、
+「中央無給電」だけを根拠にホットプラグ安全とは断定しません。
+
+## 回路の構成
+
+```text
+PC USB
+  |
+Waveshare RP2040-Zero (left only)
+  |-- L_R0..L_R2 + L_C0..L_C2 ------ left 18-key duplex matrix
+  |
+  `-- R_R0..R_R2 + R_C0..R_C2
+        |  470 ohm x 6, MCU side
+        |  TPD4E05U06DQA x 2, left connector entry
+        +-- 8P8C straight cable: GND x2 + signal x6 --+
+                                                        |
+                                  TPD4E05U06DQA x 2 ----+
+                                                        |
+                                     right 18-key duplex matrix
+```
+
+`J3`はRP2040-ZeroのGPIOだけを表す回路図上の抽象コネクタです。モジュールのUSB、5 V、
+3V3、GNDを含む電源回路と実装フットプリントは、PCB設計時に公式回路図と実部品を照合して追加します。
+電源ピンを省略した理由は、中央リンクへ電源を出さない境界を明瞭にするためであり、
+モジュール全体の電源設計が完了したという意味ではありません。
+
+## GPIO割り当て
+
+[Waveshare公式RP2040-Zero回路図](https://files.waveshare.com/upload/4/4c/RP2040_Zero.pdf)で
+GPIO0からGPIO11が外部へ出ていることを確認し、次の連続した12本を割り当てます。
+オンボードRGBのGPIO16は使いません。
+
+| RP2040-Zero | net | 用途 |
+| ---: | --- | --- |
+| GPIO0 | `L_R0` | 左row 0 |
+| GPIO1 | `L_R1` | 左row 1 |
+| GPIO2 | `L_R2` | 左row 2 |
+| GPIO3 | `L_C0` | 左column 0 |
+| GPIO4 | `L_C1` | 左column 1 |
+| GPIO5 | `L_C2` | 左column 2 |
+| GPIO6 | `R_R0_GPIO` | 470 ΩよりMCU側の右row 0 |
+| GPIO7 | `R_R1_GPIO` | 470 ΩよりMCU側の右row 1 |
+| GPIO8 | `R_R2_GPIO` | 470 ΩよりMCU側の右row 2 |
+| GPIO9 | `R_C0_GPIO` | 470 ΩよりMCU側の右column 0 |
+| GPIO10 | `R_C1_GPIO` | 470 ΩよりMCU側の右column 1 |
+| GPIO11 | `R_C2_GPIO` | 470 ΩよりMCU側の右column 2 |
+
+[RP2040データシート](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)では、
+GPIOのdrive strengthは2/4/8/12 mAから選べますが、これは電流制限器ではありません。
+IOVDD側とVSS側の全GPIO電流合計はそれぞれ50 mAが上限です。firmwareでは2 mA、slow slewを初期値とし、
+走査方向を変える前に全6線を入力へ戻します。具体的な実装と同時押し試験はIssue #10で行います。
+
+## 8P8Cピン割り当て
+
+J1とJ2は同じ番号を同じnetへ接続し、T568A/Bのペア名を通信上の意味には使いません。
+
+| 8P8C pin | net | 種類 |
+| ---: | --- | --- |
+| 1 | `GND` | 基準/ESDリターン |
+| 2 | `R_R0` | 右matrix信号 |
+| 3 | `R_R1` | 右matrix信号 |
+| 4 | `R_R2` | 右matrix信号 |
+| 5 | `R_C0` | 右matrix信号 |
+| 6 | `R_C1` | 右matrix信号 |
+| 7 | `R_C2` | 右matrix信号 |
+| 8 | `GND` | 基準/ESDリターン |
+
+両端をGNDにしたのは、基準線を2本確保し、一般的な10/100 crossoverでpin 1が入れ替わっても
+pin 8のGNDが残るようにするためです。これはcrossoverを許容する設計ではありません。
+任意の誤配線や断線ではGNDが失われるため、専用ストレートケーブル以外を使いません。
+
+中央8ピンには`VCC`、`VBUS`、`VSYS`、`RAW`、`5V`、`3V3`を割り当てません。
+この禁止条件は`make check-safety-schematic`がKiCad XML netlistから検査します。
+
+## ダイオード極性と物理キーの対応
+
+採用ダイオードはDiodes Incorporated `1N4148W-7-F`、SOD123です。
+[メーカー資料 DS30086 Rev. 31-2](https://www.diodes.com/datasheet/download/1N4148W.pdf)では、
+注文型番、カソードバンド、最大4 nsのreverse recovery、最大2 pFの容量が示されています。
+KiCadシンボルはpin 1=`K`、pin 2=`A`です。
+
+各キーは`source net - switch - A(pin 2) -> K(pin 1) - destination net`の順に接続します。
+Bank AとBank Bでsource/destinationを逆にし、同じ6本を2方向に走査します。
+
+| Bank | 対象キー（各半分） | diode電流方向 | 検出時のdrive/input |
+| --- | --- | --- | --- |
+| A | 物理matrix C0–C2、計9キー | `R0..R2 -> C0..C2` | columnをLow、rowをpull-up入力 |
+| B | 物理matrix C3–C4 + thumb 0–2、計9キー | `C0..C2 -> R0..R2` | rowをLow、columnをpull-up入力 |
+
+各半分の完全な対応は次です。右側は先頭の`L`を`R`に読み替え、同じ論理配置を使います。
+
+| 物理キー | Bank | source（A側） | destination（K側） |
+| --- | --- | --- | --- |
+| `L-M-C0-R0` | A | `L_R0` | `L_C0` |
+| `L-M-C0-R1` | A | `L_R1` | `L_C0` |
+| `L-M-C0-R2` | A | `L_R2` | `L_C0` |
+| `L-M-C1-R0` | A | `L_R0` | `L_C1` |
+| `L-M-C1-R1` | A | `L_R1` | `L_C1` |
+| `L-M-C1-R2` | A | `L_R2` | `L_C1` |
+| `L-M-C2-R0` | A | `L_R0` | `L_C2` |
+| `L-M-C2-R1` | A | `L_R1` | `L_C2` |
+| `L-M-C2-R2` | A | `L_R2` | `L_C2` |
+| `L-M-C3-R0` | B | `L_C0` | `L_R0` |
+| `L-M-C3-R1` | B | `L_C0` | `L_R1` |
+| `L-M-C3-R2` | B | `L_C0` | `L_R2` |
+| `L-M-C4-R0` | B | `L_C1` | `L_R0` |
+| `L-M-C4-R1` | B | `L_C1` | `L_R1` |
+| `L-M-C4-R2` | B | `L_C1` | `L_R2` |
+| `L-T0` | B | `L_C2` | `L_R0` |
+| `L-T1` | B | `L_C2` | `L_R1` |
+| `L-T2` | B | `L_C2` | `L_R2` |
+
+[QMKのCustom Matrix](https://docs.qmk.fm/custom_matrix)は、`COL2ROW`と`ROW2COL`を同時に使う
+不規則matrixをcustom scanの用途として挙げています。ファームウェアは`CUSTOM_MATRIX = lite`を第一候補にし、
+Bank A、全線入力化、Bank B、全線入力化の順で走査します。
+
+## 保護部品
+
+| 機能 | 採用品/注文型番 | 実装 | 数量 | 採用根拠 |
+| --- | --- | --- | ---: | --- |
+| GPIO直列抵抗 | Panasonic `ERJ3EKF4700V` | 0603、470 Ω、1%、0.1 W | 6 | 3.3 V短絡モデルで6.666 mA、通常想定20.9 mW |
+| ESDアレイ | TI `TPD4E05U06DQA` | USON-10、4 channel | 4 | 5.5 V VRWM、0.5 pF typ/channel、±12 kV contact部品定格 |
+| matrix diode | Diodes Inc. `1N4148W-7-F` | SOD123 | 36 | 明確な注文型番と極性、4 ns、2 pF max |
+
+[Panasonic製品ページ](https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF4700V)
+は`ERJ3EKF4700V`を470 Ω、1%、0603、0.100 Wとしています。
+
+[TI TPD4E05U06 datasheet Rev. O](https://www.ti.com/lit/ds/symlink/tpd4e05u06.pdf)は、
+TPD4品のI/O容量を0.5 pF typical、reverse standoffを5.5 V、breakdownを6.5 V minimum、
+IEC 61000-4-2を±12 kV contact/±15 kV airとしています。これらは部品単体の条件です。
+10 V at 1 Aというクランプ例はRP2040のI/O絶対最大`IOVDD + 0.5 V`より高く、
+直列抵抗、配線インダクタンス、GND return、放電源を含む基板全体の合格を保証しません。
+
+TPD4は8P8C直後、470 ΩはMCU直前に配置します。右基板にもTVSを置きますが、TVSは受動部品であり、
+右側へ電源を供給しません。右TVSの放電電流はケーブルGNDへ戻るため、短く太いGND配線と両GNDピンが必要です。
+
+8P8Cジャックの注文型番とフットプリントは、ケース高さとPCB固定穴を決めるまでは確定しません。
+回路図の`Connector:8P8C`は論理シンボルです。製造前に採用ジャックのpin numberingを図面と導通で照合します。
+
+## 470 Ω選定シミュレーション
+
+[`hardware/sim/rj45-protection-selection.cir`](../hardware/sim/rj45-protection-selection.cir)は、
+220/330/470 Ωを同時に比較します。2 mの集中定数は、Belden 1583Eの
+[最大mutual capacitance 56 pF/m、最大導体DCR 95 Ω/km](https://catalog.belden.com/techdata/EN/1583E_techdata.pdf)
+を参考に、ケーブル120 pF、接点込み1 Ωとしました。RP2040の5 pFはデータシートの
+I/O timingで使われるnominal loadを比較用負荷として採用した値であり、入力容量の最大値ではありません。
+両端TVSは0.5 pFを2個、pullは80 kΩ、GPIO出力抵抗25 Ωは比較用の仮定です。
+
+ngspice 45の結果:
+
+| 直列抵抗 | 10–90% rise | HIGH（2 µs） | 閉キーLOW（50 kΩ pull） | cable側GND短絡電流 |
+| ---: | ---: | ---: | ---: | ---: |
+| 220 Ω | 68.75 ns | 3.2899 V | 0.4928 V | 13.47 mA |
+| 330 Ω | 99.93 ns | 3.2854 V | 0.5048 V | 9.294 mA |
+| 470 Ω | 140.00 ns | 3.2797 V | 0.5199 V | 6.666 mA |
+
+閉キーLOWは、sense側とdrive側の両方に候補抵抗を入れ、MCU入力pinで測っています。
+470 Ωでも1 µs以上のsettling timeに対して約7倍の時間余裕を取り、HIGHはRP2040のVIH 2.0 V以上、
+閉キーLOWはVIL 0.8 V以下です。単線短絡のモデル電流は6.666 mA、6線の独立したGND短絡を単純合算すると
+39.996 mAで、RP2040の全GPIO source上限50 mAを下回ります。330 Ωでは同じ合算が55.77 mAとなるため、
+速度差を優先する根拠がない初号機では470 Ωを採用します。
+
+LOW側の1N4148Wは近似モデルであり、RP2040のdrive strengthは電流制限ではなく、25 Ωも保証値ではありません。
+6線合算も他のGPIO負荷、抵抗許容差、電源変動、MCU内の電流分配を含まないため、複数線短絡の無損傷保証には
+使いません。これは任意誤配線を許容する設計ではありません。
+
+## 誤接続と故障モード
+
+| 事象 | 回路上の結果 | 判定 |
+| --- | --- | --- |
+| 正常な抜線 | 右18キーの経路が開く。中央電源の切断はない | 電気的ストレスは小さい見込み。誤キー/押下残りはIssue #10/#11で検証 |
+| 1信号–GND | MCU側470 Ωを通る。仮定モデル6.666 mA | 電流低減のみ。MCU無損傷を未証明 |
+| 2信号の逆レベル競合 | 470 Ωを2本通るため仮定上約3.4 mA | 任意の同時競合とfirmware faultは未証明 |
+| 10/100 crossover | `R_R1`がGND、`R_R0`と`R_C1`が入れ替わる | 禁止。キー誤検出とGPIO故障状態になる |
+| 非PoE LAN port | 独自DC matrixをEthernet PHYへ接続する | 禁止。キーボードとネットワーク機器の安全を保証しない |
+| IEEE PoE PSE | 適合PSEは有効な約25 kΩ signatureを検出してから給電する | その検出を保護機能として信用しない。接続禁止 |
+| 24 V passive PoE | detectionなしでpin 4/5、7/8へ24 Vが来る製品が存在する | 470 Ωに最大約1.23 W相当。破損/発熱のおそれ、絶対禁止 |
+| 48 V相当誤給電 | 470 Ωへ48 Vが掛かる仮定 | 約4.90 W相当。抵抗/TVSでは保護不能、絶対禁止 |
+| IEC ESD | TVSがGNDへ電流を逃がす | 部品定格のみ。完成基板のIEC試験と機能確認が必要 |
+
+[Ethernet Allianceの802.3bt解説](https://ethernetalliance.org/wp-content/uploads/2018/04/WP_EA_Overview8023bt_FINAL.pdf)
+は、PSEが複数点で有効な25 kΩ付近のsignatureを検出してから給電する仕組みを説明しています。
+しかし、[Ubiquitiの24 V passive PoE仕様](https://dl.ui.com/qsg/EP-24V-72W/EP-24V-72W_EN.html)のように、
+pin 4/5を正、7/8を負として24 Vを出す実装も存在します。本回路ではpin 8がGNDであり、
+470 Ωと低電圧TVSはPoE保護部品ではありません。
+
+PoEやLANの誤接続は実機で破壊試験しません。ケースと基板へ警告し、専用色の短いストレートケーブルを
+キーボードと一緒に保管します。PoE環境で取り違えを管理できない場合は、8P8Cではなく物理的に非互換な
+ロック付き多極コネクタへ変更します。
+
+## 検査方法
+
+```bash
+make check-safety-schematic
+make validate-hardware
+```
+
+`check-safety-schematic`はKiCad 10でXML netlistを出力し、次を確認します。
+
+- 36 switch、36 diodeとレイアウトJSONのキーIDが1対1
+- Bank A/BのA/K向きと6本のmatrix net
+- J1/J2 pin 1/8がGND、pin 2–7が指定信号
+- 中央ピンに禁止電源netがない
+- `ERJ3EKF4700V`が6個、各信号とMCUの間にある
+- `TPD4E05U06DQA`が左右各2個、全信号とGNDへ接続される
+- `1N4148W-7-F`が36個
+- negative testが中央VBUS混入と220 Ωへの変更を拒否する
+
+KiCad ERCの0 violation、構造検査、ngspiceは別の証拠です。完成のためにはIssue #10のQMK走査、
+PCB DRC、無通電導通、電流制限付き電源、オシロスコープ、Issue #11の100回挿抜が残ります。
+PCのUSBポート、LANスイッチ、PoE機器を故障注入には使いません。
 
 
 ---
@@ -1740,3 +2040,102 @@ Kinesisのkeywellは、キー面を三次元に配置して指の伸展を抑え
 - エンコーダが必須となる具体的なユースケースが確定する
 - Choc v1スイッチ、ソケット、キーキャップを継続調達できない
 - ケース高さや実装制約が低背化の目的を満たさない
+
+
+---
+
+## ADR 0003: 右matrix信号へ470 Ωと両端TVSを使う
+
+- 状態: Accepted
+- 決定日: 2026-08-01
+- 対象: 初号機36キー、1 MCU、右側パッシブ、8P8C中央接続
+
+## 文脈
+
+中央ケーブルへ電源を出さなくても、活線挿抜や誤配線ではGPIO–GND、GPIO同士、ESDの経路が残ります。
+直列抵抗を大きくすると故障電流は減りますが、ケーブル容量と入力容量に対するsettlingは遅くなります。
+TVSはESD電流をGNDへ逃がしますが、容量、クランプ電圧、GND配線が信号とMCUストレスへ影響します。
+
+## 決定
+
+初号機の中央へ出る6信号すべてに、MCU側でPanasonic `ERJ3EKF4700V`（470 Ω、1%、0603、0.1 W）を入れます。
+左右の8P8C直後にはTI `TPD4E05U06DQA`を2個ずつ、合計4個置き、6信号を各コネクタ位置でGNDへクランプします。
+
+firmwareの初期条件は次とします。
+
+- GPIO drive strength: 2 mA
+- slew: slow
+- 走査相を変える前に、出力だった全線を入力へ戻す
+- driveは1本ずつ、sampleまで1 µs以上待つ
+
+これらはIssue #10でQMKへ実装し、実機波形で再確認します。
+
+## 根拠
+
+比較用モデルでは、2 mケーブルを120 pF、RP2040のI/O timing試験条件にあるnominal loadを5 pF、
+左右TVSを合計1 pF、
+接点/ケーブルを1 Ω、GPIO出力抵抗を仮の25 Ωとしました。
+
+| 候補 | 10–90% rise | 閉キーLOW | 3.3 V signal–GND故障電流 | 判断 |
+| ---: | ---: | ---: | ---: | --- |
+| 220 Ω | 68.75 ns | 0.4928 V | 13.47 mA | 故障電流が大きい |
+| 330 Ω | 99.93 ns | 0.5048 V | 9.294 mA | timingは十分だが6線短絡モデルが50 mAを超える |
+| 470 Ω | 140.00 ns | 0.5199 V | 6.666 mA | 採用 |
+
+閉キーLOWモデルは実配線どおり、drive側とsense側の両方に候補抵抗を入れています。
+470 ΩでもLOWはRP2040のVIL 0.8 V未満、HIGHはVIH 2.0 V超、riseは140 nsで、
+1 µsのsettlingに対して約7倍の時間余裕があります。単線短絡は6.666 mA、6線が個別にGNDへ
+短絡する仮定モデルの合計は39.996 mAで、50 mAの全GPIO source上限を下回ります。
+0.1 W抵抗に対し、3.3 Vの定常短絡でモデル上約20.9 mWです。
+
+この合計値は25 Ωの仮定、3.3 V、他のGPIO負荷なしという条件に限られます。50 mAへ約10 mAしか
+残らず、RP2040の出力段や抵抗の許容差を保証する解析でもないため、6線短絡への耐性は主張しません。
+
+TPD4E05U06DQAは5.5 V VRWM、4 channel、0.5 pF typical/channelであり、
+6本を4 channel品2個で覆えます。コネクタ両端へ置くのは、ESD侵入口からクランプまでを短くし、
+切り離された右基板側にも入口保護を残すためです。
+
+## 安全性の限定
+
+この決定は次を保証しません。
+
+- RP2040のdrive strength設定は電流リミッタではない
+- 470 Ωの単線・6線モデル値はGPIOの無損傷保証ではない
+- 任意の複数線短絡や他GPIO負荷ではRP2040の全I/O 50 mA上限を超え得る
+- TVSのIEC定格は完成基板のIEC合格ではない
+- 24/48 VのPoE誤給電では470 Ωが約1.23/4.90 Wを消費し得るため保護不能
+- 抜線後の押下残り、再接続、USB再列挙はfirmwareと実機の課題
+
+したがって8P8Cは`SPLIT ONLY / NO LAN`、専用ストレートケーブル、Ethernet/PoE接続禁止を必須条件とします。
+
+## 代替案
+
+### 220 Ω
+
+riseは最短ですが、故障電流がモデル上13 mAを超えるため採用しません。
+
+### 330 Ω
+
+470 Ωよりriseは約40 ns短い一方、単線故障電流は約39%大きく、6線短絡の仮定合計が50 mAを超えます。
+今回の1 µs settling条件では速度差を優先する根拠がないため採用しません。
+
+### TVSをMCU側だけに置く
+
+部品数は減りますが、右基板単体と右コネクタ直後の放電経路がなくなるため採用しません。
+
+### 8P8Cをやめる
+
+PoE環境で取り違えを管理できない場合の推奨です。物理的に非互換なロック付き8極以上のコネクタを選び、
+このADRを置き換えます。
+
+## 再検討条件
+
+- 実ケーブルLCR測定が120 pF/1 Ωモデルから大きく外れる
+- QMK走査で1 µs settlingを確保できない
+- 470 ΩでVIL 0.8 V以下、VIH 2.0 V以上を実測できない
+- IEC 61000-4-2試験または接触放電でリセット、誤キー、損傷が起きる
+- コネクタ周辺のGND returnを短く実装できない
+- 利用環境でLAN/PoEとの取り違えを管理できない
+
+詳細な回路、pinout、部品、故障分析は
+[36キーJapanese duplex matrixと8P8C保護回路](../docs/13-matrix-rj45-safety.md)を参照します。

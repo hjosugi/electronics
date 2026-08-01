@@ -32,6 +32,11 @@ Issue 08では、初号機にWaveshare RP2040-Zeroモジュールを採用する
 
 Issue 05では、初号機を36キー、Kailh Choc v1、Chocofi基準の18×17 mm配置、エンコーダなしとする判断を[ADR 0002](adr/0002-use-36-key-choc-v1-layout.md)へ記録しました。Kinesisの縦列、独立親指クラスタ、分離、段階的tentingという原則を取り入れ、stagger、splay、親指位置、机上フィット値を[制限付きプロファイル](layout/profiles/balanced-kinesis-inspired.json)から生成します。人体適合、キーキャップ干渉、フットプリント、concave keywellは実機で未検証であり、後続Issueで確認します。
 
+Issue 06、07、09では、36キーduplex matrix、GPIO0–11、中央8P8Cの`GND x2 + signal x6`、
+470 Ω、両端TPD4E05U06DQAを[回路・安全性文書](13-matrix-rj45-safety.md)と
+[ADR 0003](adr/0003-use-470-ohm-and-dual-ended-tvs.md)へ確定しました。KiCad 10 ERCとnetlist構造検査、
+ngspice感度解析は合格済みです。これはPCB、QMK、活線挿抜、IEC ESDの完了を先取りしません。
+
 ## フェーズ2: シミュレーションとファームウェア
 
 | Issue | 検証 | 合格の考え方 |

@@ -46,6 +46,7 @@ start_check "ngspice" ./scripts/check-spice.sh
 
 if [[ "$mode" == "--hardware" ]]; then
   start_check "KiCad ERC/DRC" ./scripts/check-kicad-suite.sh
+  start_check "Safety netlist" ./scripts/check-safety-schematic.sh
 fi
 
 status=0

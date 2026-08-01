@@ -14,6 +14,7 @@ circuits=(
   spice/trrs-vcc-short.cir
   spice/gpio-series-resistors.cir
   spice/passive-connector-bounce.cir
+  hardware/sim/rj45-protection-selection.cir
 )
 
 log_dir="$(mktemp -d "${TMPDIR:-/tmp}/electronics-spice.XXXXXX")"

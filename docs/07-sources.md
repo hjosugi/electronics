@@ -16,6 +16,10 @@
   Google Testベースのテストと`make test:all`。
 - [Raspberry Pi: RP2040 Datasheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf)
   GPIO、電源、絶対最大定格、PIOの一次資料。
+- [Waveshare: RP2040-Zero](https://www.waveshare.com/wiki/RP2040-Zero)
+  公式回路図、pinout、GPIO16のオンボードRGBを確認。
+- [QMK: Custom Matrix](https://docs.qmk.fm/custom_matrix)
+  `COL2ROW`と`ROW2COL`を併用する不規則matrixのcustom scan。
 
 ## 参考キーボード
 
@@ -68,10 +72,27 @@
 - [TI: TPD2EUSB30A](https://www.ti.com/product/TPD2EUSB30A)
   2チャネル、3.6 V `VRWM`、低容量ESD保護の選定例。
 
+## 採用する8P8C保護回路
+
+- [TI: TPD4E05U06 datasheet Rev. O](https://www.ti.com/lit/ds/symlink/tpd4e05u06.pdf)
+  4 channel、5.5 V `VRWM`、0.5 pF typical、IEC 61000-4-2部品定格、USON-10 pinout。
+- [Panasonic: ERJ3EKF4700V](https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF4700V)
+  470 Ω、1%、0603、0.100 Wの注文型番。
+- [Diodes Incorporated: 1N4148W DS30086 Rev. 31-2](https://www.diodes.com/datasheet/download/1N4148W.pdf)
+  `1N4148W-7-F`、SOD123、カソード表示、電気特性。
+- [Belden: 1583E technical data](https://catalog.belden.com/techdata/EN/1583E_techdata.pdf)
+  Cat 5eケーブルの最大mutual capacitance 56 pF/m、最大導体DCR 95 Ω/km。
+- [Ethernet Alliance: Overview of IEEE 802.3bt](https://ethernetalliance.org/wp-content/uploads/2018/04/WP_EA_Overview8023bt_FINAL.pdf)
+  PoEのsignature detectionとpairsetへの給電条件。
+- [Ubiquiti: EP-24V-72W](https://dl.ui.com/qsg/EP-24V-72W/EP-24V-72W_EN.html)
+  pin 4/5正、7/8負で24 Vを出すpassive PoE製品の一次資料。
+- [KiCad: Libraries License](https://www.kicad.org/libraries/license/)
+  標準symbol/footprintのCC-BY-SA-4.0と設計ファイル向け例外。
+
 ## 本資料で行った訂正と限定
 
 - `TPS2553 = 逆流を即時遮断`とは書かない。逆電圧検出には代表4 msの遅延がある。
 - `RP2040でPIO full-duplexが使える = USB-C電源が安全`とは扱わない。
 - `8P8Cに電源がない = ESDやPoE誤接続にも安全`とは扱わない。
-- `330 Ωなら常に安全`とは扱わない。MCU定格と信号閾値で再評価する。
+- `470 Ωなら常に安全`とは扱わない。MCU定格と信号閾値で再評価する。
 - `KiCadシミュレーション成功 = 製造可能`とは扱わない。ERC、DRC、導通、実測を別に行う。

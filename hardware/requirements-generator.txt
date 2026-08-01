@@ -1,0 +1,3 @@
+# Optional, reproducible schematic generator dependency. CI validates the
+# generated KiCad file and does not download this package.
+kicad-sch-api==0.5.6
