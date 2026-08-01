@@ -15,7 +15,7 @@
 | 03 repo初期化 | 文書、SPICE、CI、Issueを公開する | main SHA、PUBLIC読戻し、Issue一覧 |
 | 04 ERC/DRC CI | 回路変更ごとの機械検査 | 意図的violationでCIが失敗する証拠 |
 
-Issue 03だけは、このスターターの初回公開とIssue登録をGitHubから確認した時点で完了できます。Issue 01、02、04は、ツール導入やKiCad設計ファイルが必要なので別の証拠を待ちます。
+Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済み、Issue 03は初回公開とIssue登録を確認済みです。Issue 02はローカルUF2、Issue 04は意図的violationでCIが失敗する証拠がそろうまで完了扱いにしません。
 
 ## フェーズ1: 要件と回路
 
@@ -27,6 +27,8 @@ Issue 03だけは、このスターターの初回公開とIssue登録をGitHub�
 | 08 MCU | RP2040-Zeroか素RP2040か | 選定ADR |
 
 このフェーズでは、部品名だけでなく正確な注文型番、データシート改訂、シンボル/フットプリントの由来を記録します。Issue 05の要件が決まるまで、製造用配線を確定しません。
+
+Issue 08では、初号機にWaveshare RP2040-Zeroモジュールを採用する判断を[ADR 0001](adr/0001-use-waveshare-rp2040-zero.md)へ記録しました。GPIO割り当て、保護回路、QMK設定の合格を先取りする決定ではありません。
 
 ## フェーズ2: シミュレーションとファームウェア
 
