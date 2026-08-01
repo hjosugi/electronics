@@ -22,6 +22,8 @@
   --font-weight-medium: 550;
   --font-weight-semibold: 650;
   --font-weight-bold: 760;
+  --letter-spacing-heading: -0.025em;
+  --letter-spacing-label: 0.12em;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -54,6 +56,8 @@
   --shadow-card: 0 1.25rem 3rem rgb(23 46 35 / 0.09);
   --content-width: 72rem;
   --reading-width: 48rem;
+  --lead-width: 42rem;
+  --control-height: 2.75rem;
   --border-width: 1px;
   --focus-width: 3px;
   --transition-fast: 160ms ease;
@@ -145,7 +149,7 @@ h2,
 h3 {
   color: var(--color-text);
   font-weight: var(--font-weight-bold);
-  letter-spacing: -0.025em;
+  letter-spacing: var(--letter-spacing-heading);
 }
 
 h1 {
@@ -249,11 +253,11 @@ nav a {
   color: var(--color-accent-strong);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--letter-spacing-label);
 }
 
 .lead {
-  max-width: 42rem;
+  max-width: var(--lead-width);
   margin-block-end: var(--space-6);
   color: var(--color-text-muted);
   font-size: var(--font-size-lead);
@@ -269,7 +273,7 @@ nav a {
 .button {
   display: inline-flex;
   align-items: center;
-  min-height: 2.75rem;
+  min-height: var(--control-height);
   padding: var(--space-2) var(--space-5);
   border: var(--border-width) solid transparent;
   border-radius: var(--radius-sm);
@@ -316,7 +320,7 @@ nav a {
   color: var(--color-accent);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
-  letter-spacing: 0.1em;
+  letter-spacing: var(--letter-spacing-label);
 }
 
 .section {
