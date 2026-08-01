@@ -1,0 +1,17 @@
+* TRRS-like VCC-to-GND transient short
+* Educational simplified model; do not treat peak current as a USB-port rating.
+
+VUSB vusb 0 DC 5
+Rsource vusb vcc_contact 0.30
+Cport vcc_contact 0 100n
+
+Vshort_ctl short_ctl 0 PULSE(0 1 10m 1n 1n 50u 30m)
+Sshort vcc_contact 0 short_ctl 0 SHORT_CONTACT
+.model SHORT_CONTACT SW(Ron=0.05 Roff=1e12 Vt=0.5 Vh=0.1)
+
+.tran 100n 20m
+.meas tran short_peak_a MAX par('-i(VUSB)') FROM=10m TO=10.05m
+.meas tran vcc_min_v MIN v(vcc_contact) FROM=10m TO=10.05m
+.meas tran short_charge_c INTEG par('-i(VUSB)') FROM=10m TO=10.05m
+
+.end

@@ -1,0 +1,32 @@
+* Passive right-half connector bounce.
+* There is no VCC rail crossing the connector.
+
+Vgpio gpio_supply 0 DC 3.3
+Rgpio gpio_supply gpio_pin 25
+Rseries gpio_pin connector_left 330
+
+Vcontact_ctl contact_ctl 0 PWL(
++ 0 0
++ 1m 0
++ 1.0001m 1
++ 1.1000m 1
++ 1.1001m 0
++ 1.2000m 0
++ 1.2001m 1
++ 1.2500m 1
++ 1.2501m 0
++ 1.3000m 0
++ 1.3001m 1
++ 5m 1)
+Sconnector connector_left right_line contact_ctl 0 CONNECTOR_CONTACT
+.model CONNECTOR_CONTACT SW(Ron=0.05 Roff=1e12 Vt=0.5 Vh=0.1)
+
+Ccable right_line 0 300p
+Rmeasurement right_line 0 100k
+
+.tran 100n 3m
+.meas tran connector_peak_a MAX par('-i(Vgpio)') FROM=1m TO=1.5m
+.meas tran right_connected_v FIND v(right_line) AT=2m
+.meas tran left_connected_v FIND v(connector_left) AT=2m
+
+.end

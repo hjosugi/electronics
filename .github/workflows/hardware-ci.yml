@@ -1,0 +1,42 @@
+name: hardware-ci
+
+on:
+  push:
+    paths:
+      - "hardware/**"
+      - ".github/workflows/hardware-ci.yml"
+  pull_request:
+    paths:
+      - "hardware/**"
+      - ".github/workflows/hardware-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  erc-drc:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kicad/kicad:10.0
+      options: --user root
+    steps:
+      - uses: actions/checkout@v6
+      - name: ERC and DRC
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -d '' schematics < <(find hardware -type f -name '*.kicad_sch' -print0 2>/dev/null || true)
+          mapfile -d '' boards < <(find hardware -type f -name '*.kicad_pcb' -print0 2>/dev/null || true)
+
+          if (( ${#schematics[@]} == 0 && ${#boards[@]} == 0 )); then
+            echo "KiCad設計ファイルはまだありません。"
+            exit 0
+          fi
+
+          for schematic in "${schematics[@]}"; do
+            kicad-cli sch erc "$schematic" --exit-code-violations
+          done
+
+          for board in "${boards[@]}"; do
+            kicad-cli pcb drc "$board" --exit-code-violations
+          done

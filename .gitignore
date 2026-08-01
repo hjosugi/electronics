@@ -1,0 +1,26 @@
+# --- KiCad ---
+*.kicad_prl
+*-backups/
+*.kicad_sch-bak
+*.kicad_pcb-bak
+*.bak
+_autosave-*
+fp-info-cache
+~*.lck
+*.lck
+# fabrication outputs (generate via CI, do not commit)
+hardware/gerbers/
+hardware/production/
+dist/
+# --- Simulation ---
+*.raw
+*.log
+*.tmp
+# --- Firmware ---
+*.uf2
+*.hex
+*.bin
+.build/
+# --- Editor / OS ---
+.DS_Store
+*~

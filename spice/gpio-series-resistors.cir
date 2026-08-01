@@ -1,0 +1,39 @@
+* GPIO-to-GND fault current with candidate external series resistors.
+* Each branch has an independent 3.3 V source and a hypothetical 25 ohm output resistance.
+
+Vfault_ctl fault_ctl 0 PULSE(0 1 1m 1n 1n 1m 10m)
+.model FAULT_CONTACT SW(Ron=0.05 Roff=1e12 Vt=0.5 Vh=0.1)
+
+Vgpio0 src0 0 DC 3.3
+Rout0 src0 pin0 25
+Rseries0 pin0 fault0 1m
+Sfault0 fault0 0 fault_ctl 0 FAULT_CONTACT
+
+Vgpio100 src100 0 DC 3.3
+Rout100 src100 pin100 25
+Rseries100 pin100 fault100 100
+Sfault100 fault100 0 fault_ctl 0 FAULT_CONTACT
+
+Vgpio220 src220 0 DC 3.3
+Rout220 src220 pin220 25
+Rseries220 pin220 fault220 220
+Sfault220 fault220 0 fault_ctl 0 FAULT_CONTACT
+
+Vgpio330 src330 0 DC 3.3
+Rout330 src330 pin330 25
+Rseries330 pin330 fault330 330
+Sfault330 fault330 0 fault_ctl 0 FAULT_CONTACT
+
+Vgpio470 src470 0 DC 3.3
+Rout470 src470 pin470 25
+Rseries470 pin470 fault470 470
+Sfault470 fault470 0 fault_ctl 0 FAULT_CONTACT
+
+.tran 1u 5m
+.meas tran i_no_series_a MAX par('-i(Vgpio0)') FROM=1m TO=2m
+.meas tran i_100_a MAX par('-i(Vgpio100)') FROM=1m TO=2m
+.meas tran i_220_a MAX par('-i(Vgpio220)') FROM=1m TO=2m
+.meas tran i_330_a MAX par('-i(Vgpio330)') FROM=1m TO=2m
+.meas tran i_470_a MAX par('-i(Vgpio470)') FROM=1m TO=2m
+
+.end
