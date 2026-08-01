@@ -21,22 +21,21 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v6
-      - name: ERC and DRC
+      - name: KiCad 10・ERC/DRC・ngspice
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -d '' schematics < <(find hardware -type f -name '*.kicad_sch' -print0 2>/dev/null || true)
-          mapfile -d '' boards < <(find hardware -type f -name '*.kicad_pcb' -print0 2>/dev/null || true)
+          bash ./scripts/check-notebooklm.sh
+          bash ./scripts/check-markdown-links.sh
+          bash ./scripts/validate.sh
+          bash ./scripts/check-kicad.sh
 
-          if (( ${#schematics[@]} == 0 && ${#boards[@]} == 0 )); then
-            echo "KiCad設計ファイルはまだありません。"
-            exit 0
-          fi
-
-          for schematic in "${schematics[@]}"; do
-            kicad-cli sch erc "$schematic" --exit-code-violations
-          done
-
-          for board in "${boards[@]}"; do
-            kicad-cli pcb drc "$board" --exit-code-violations
+          for circuit in \
+            spice/rc-transient.cir \
+            spice/trrs-vcc-short.cir \
+            spice/gpio-series-resistors.cir \
+            spice/passive-connector-bounce.cir
+          do
+            echo "==> $circuit"
+            ngspice -b "$circuit"
           done

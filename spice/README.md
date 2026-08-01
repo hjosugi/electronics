@@ -21,3 +21,4 @@ ngspice -b spice/trrs-vcc-short.cir
 - [OSS回路シミュレーション手順](../docs/03-simulation-guide.md)
 - [付属ngspice回路の解説](../docs/04-spice-models.md)
 - [基板化と実機検証](../docs/05-hardware-validation.md)
+- [KiCad 10開発環境とスモークテスト](../docs/10-kicad-environment.md)

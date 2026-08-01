@@ -1,0 +1,12 @@
+* KiCad/ngspice environment smoke test: first-order RC step response.
+* R=1 kohm, C=1 uF, so tau=1 ms and V(out, tau) is about 3.16 V for a 5 V step.
+
+Vstep in 0 PULSE(0 5 0 1n 1n 10m 20m)
+Rcharge in out 1k
+Cstore out 0 1u IC=0
+
+.tran 1u 5m UIC
+.meas tran vout_at_tau_v FIND v(out) AT=1m
+.meas tran time_to_63pct_s WHEN v(out)=3.1606 RISE=1
+
+.end

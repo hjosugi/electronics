@@ -38,7 +38,7 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 8. [一次資料と更新日](docs/07-sources.md)
 9. [実装ロードマップとIssue完了条件](docs/08-roadmap.md)
 10. [教育用ngspiceモデルの基準結果](docs/09-simulation-results.md)
-10. [教育用ngspiceモデルの基準結果](docs/09-simulation-results.md)
+11. [KiCad 10開発環境とスモークテスト](docs/10-kicad-environment.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -62,6 +62,7 @@ SPICEモデルだけを個別実行する場合:
 ngspice -b spice/trrs-vcc-short.cir
 ngspice -b spice/gpio-series-resistors.cir
 ngspice -b spice/passive-connector-bounce.cir
+ngspice -b spice/rc-transient.cir
 ```
 
 モデル内の電源抵抗、GPIO出力抵抗、ケーブル容量などは比較用の仮定値です。採用部品が決まったら、データシートまたは実測値へ置き換えてください。
@@ -77,6 +78,8 @@ kicad-cli version
 ```
 
 KiCadにはngspiceベースの統合シミュレータがあります。CLI版`ngspice`は、付属`.cir`ファイルの再現実行とCIに使います。
+
+KiCad 10環境、空回路ERC、RC過渡解析をまとめて確認する手順は[開発環境スモークテスト](docs/10-kicad-environment.md)に記録しています。
 
 ## Issue
 
