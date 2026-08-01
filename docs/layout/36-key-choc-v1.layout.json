@@ -1,0 +1,459 @@
+{
+  "format_version": 1,
+  "name": "split-36-choc-v1",
+  "profile_name": "balanced-kinesis-inspired",
+  "profile_source": "docs/layout/profiles/balanced-kinesis-inspired.json",
+  "decision_record": "../adr/0002-use-36-key-choc-v1-layout.md",
+  "units": "mm",
+  "license": "CERN-OHL-P-2.0",
+  "provenance": {
+    "upstream": "https://github.com/pashutk/chocofi",
+    "upstream_commit": "273676d11b06785fb5a1a94860a39fc36c38baba",
+    "upstream_file": "pcb/chocofi-topplate.kicad_pcb",
+    "kinesis_principles": [
+      "左右分離",
+      "指の自然な運動に沿う縦列",
+      "独立した親指クラスタ",
+      "tentingをケース側で段階調整"
+    ],
+    "modifications": [
+      "スイッチ中心座標を片側ローカル原点へ正規化",
+      "左右鏡像のキー集合と安定したキーIDを生成",
+      "column splayと親指位置を制限付きプロファイル化",
+      "KLE表示用JSONを生成"
+    ]
+  },
+  "requirements": {
+    "total_keys": 36,
+    "keys_per_half": 18,
+    "matrix_per_half": {
+      "rows": 3,
+      "columns": 5
+    },
+    "thumb_keys_per_half": 3,
+    "rotary_encoder": false,
+    "surface": {
+      "type": "flat",
+      "concave_keywell": false
+    }
+  },
+  "switch": {
+    "family": "Kailh PG1350 (Choc v1)",
+    "default_switch_part_number": "CPG135001D01",
+    "default_switch_description": "Choc Red, linear",
+    "hotswap_contact_part_number": "CPG135001S30",
+    "footprint_status": "Issue #6で最新メーカー図面と実部品を照合して確定する"
+  },
+  "geometry": {
+    "coordinate_system": {
+      "scope": "片側ローカル座標。右手側はX方向と回転角を鏡像化して配置する",
+      "origin": "C0中心のX=0とC2最上段中心のY=0が作る基準点",
+      "x_positive": "外側小指列から内側人差し指列へ",
+      "y_positive": "指先側から手首側へ"
+    },
+    "matrix": {
+      "horizontal_pitch_mm": 18.0,
+      "vertical_pitch_mm": 17.0,
+      "column_top_y_mm": [
+        18.0,
+        6.0,
+        0.0,
+        6.62,
+        9.0
+      ],
+      "column_splay_deg": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thumb_keys": [
+      {
+        "thumb_index": 0,
+        "x_mm": 48.1,
+        "y_mm": 60.59,
+        "rotation_deg": 0.0
+      },
+      {
+        "thumb_index": 1,
+        "x_mm": 68.15,
+        "y_mm": 63.18,
+        "rotation_deg": -15.0
+      },
+      {
+        "thumb_index": 2,
+        "x_mm": 88.75,
+        "y_mm": 66.39,
+        "rotation_deg": 60.0
+      }
+    ],
+    "desk_fit": {
+      "separation_mm": 180.0,
+      "half_yaw_deg": 5.0,
+      "tent_steps_deg": [
+        0.0,
+        10.0,
+        20.0
+      ],
+      "default_tent_deg": 10.0
+    }
+  },
+  "keys": [
+    {
+      "id": "L-M-C0-R0",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 0,
+      "row": 0,
+      "local_x_mm": 0.0,
+      "local_y_mm": 18.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C0-R1",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 0,
+      "row": 1,
+      "local_x_mm": 0.0,
+      "local_y_mm": 35.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C0-R2",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 0,
+      "row": 2,
+      "local_x_mm": 0.0,
+      "local_y_mm": 52.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C1-R0",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 1,
+      "row": 0,
+      "local_x_mm": 18.0,
+      "local_y_mm": 6.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C1-R1",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 1,
+      "row": 1,
+      "local_x_mm": 18.0,
+      "local_y_mm": 23.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C1-R2",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 1,
+      "row": 2,
+      "local_x_mm": 18.0,
+      "local_y_mm": 40.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C2-R0",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 2,
+      "row": 0,
+      "local_x_mm": 36.0,
+      "local_y_mm": 0.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C2-R1",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 2,
+      "row": 1,
+      "local_x_mm": 36.0,
+      "local_y_mm": 17.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C2-R2",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 2,
+      "row": 2,
+      "local_x_mm": 36.0,
+      "local_y_mm": 34.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C3-R0",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 3,
+      "row": 0,
+      "local_x_mm": 54.0,
+      "local_y_mm": 6.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C3-R1",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 3,
+      "row": 1,
+      "local_x_mm": 54.0,
+      "local_y_mm": 23.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C3-R2",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 3,
+      "row": 2,
+      "local_x_mm": 54.0,
+      "local_y_mm": 40.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C4-R0",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 4,
+      "row": 0,
+      "local_x_mm": 72.0,
+      "local_y_mm": 9.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C4-R1",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 4,
+      "row": 1,
+      "local_x_mm": 72.0,
+      "local_y_mm": 26.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-M-C4-R2",
+      "hand": "left",
+      "zone": "matrix",
+      "column": 4,
+      "row": 2,
+      "local_x_mm": 72.0,
+      "local_y_mm": 43.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-T0",
+      "hand": "left",
+      "zone": "thumb",
+      "thumb_index": 0,
+      "local_x_mm": 48.1,
+      "local_y_mm": 60.59,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "L-T1",
+      "hand": "left",
+      "zone": "thumb",
+      "thumb_index": 1,
+      "local_x_mm": 68.15,
+      "local_y_mm": 63.18,
+      "rotation_deg": -15.0
+    },
+    {
+      "id": "L-T2",
+      "hand": "left",
+      "zone": "thumb",
+      "thumb_index": 2,
+      "local_x_mm": 88.75,
+      "local_y_mm": 66.39,
+      "rotation_deg": 60.0
+    },
+    {
+      "id": "R-M-C0-R0",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 0,
+      "row": 0,
+      "local_x_mm": 0.0,
+      "local_y_mm": 18.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C0-R1",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 0,
+      "row": 1,
+      "local_x_mm": 0.0,
+      "local_y_mm": 35.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C0-R2",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 0,
+      "row": 2,
+      "local_x_mm": 0.0,
+      "local_y_mm": 52.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C1-R0",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 1,
+      "row": 0,
+      "local_x_mm": 18.0,
+      "local_y_mm": 6.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C1-R1",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 1,
+      "row": 1,
+      "local_x_mm": 18.0,
+      "local_y_mm": 23.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C1-R2",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 1,
+      "row": 2,
+      "local_x_mm": 18.0,
+      "local_y_mm": 40.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C2-R0",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 2,
+      "row": 0,
+      "local_x_mm": 36.0,
+      "local_y_mm": 0.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C2-R1",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 2,
+      "row": 1,
+      "local_x_mm": 36.0,
+      "local_y_mm": 17.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C2-R2",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 2,
+      "row": 2,
+      "local_x_mm": 36.0,
+      "local_y_mm": 34.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C3-R0",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 3,
+      "row": 0,
+      "local_x_mm": 54.0,
+      "local_y_mm": 6.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C3-R1",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 3,
+      "row": 1,
+      "local_x_mm": 54.0,
+      "local_y_mm": 23.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C3-R2",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 3,
+      "row": 2,
+      "local_x_mm": 54.0,
+      "local_y_mm": 40.62,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C4-R0",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 4,
+      "row": 0,
+      "local_x_mm": 72.0,
+      "local_y_mm": 9.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C4-R1",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 4,
+      "row": 1,
+      "local_x_mm": 72.0,
+      "local_y_mm": 26.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-M-C4-R2",
+      "hand": "right",
+      "zone": "matrix",
+      "column": 4,
+      "row": 2,
+      "local_x_mm": 72.0,
+      "local_y_mm": 43.0,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-T0",
+      "hand": "right",
+      "zone": "thumb",
+      "thumb_index": 0,
+      "local_x_mm": 48.1,
+      "local_y_mm": 60.59,
+      "rotation_deg": 0.0
+    },
+    {
+      "id": "R-T1",
+      "hand": "right",
+      "zone": "thumb",
+      "thumb_index": 1,
+      "local_x_mm": 68.15,
+      "local_y_mm": 63.18,
+      "rotation_deg": 15.0
+    },
+    {
+      "id": "R-T2",
+      "hand": "right",
+      "zone": "thumb",
+      "thumb_index": 2,
+      "local_x_mm": 88.75,
+      "local_y_mm": 66.39,
+      "rotation_deg": -60.0
+    }
+  ]
+}

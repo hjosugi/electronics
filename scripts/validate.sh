@@ -36,8 +36,8 @@ for issue in issues/[0-9][0-9]-*.md; do
   issue_count=$((issue_count + 1))
 done
 
-if [[ "$issue_count" -ne 12 ]]; then
-  echo "Issue定義は12件必要です（現在: $issue_count件）" >&2
+if [[ "$issue_count" -ne 13 ]]; then
+  echo "Issue定義は13件必要です（現在: $issue_count件）" >&2
   exit 1
 fi
 

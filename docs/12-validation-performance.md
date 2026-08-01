@@ -7,6 +7,8 @@
 [`scripts/run-validation.sh`](../scripts/run-validation.sh)は次を並列実行します。
 
 - NotebookLM統合Markdownの再生成差分
+- 36キーレイアウトの再生成差分、値域、不変条件
+- ドキュメントCSSの必須変数、タイポグラフィ直書き、インラインstyle
 - Markdownローカルリンク
 - Bash構文、ShellCheck、Issue形式、`git diff --check`
 - ngspiceモデル
@@ -18,7 +20,7 @@ KiCadの通常検査とnegative testは、KiCad CLIのインスタンスロッ�
 
 ## 2026年8月1日の測定
 
-Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォームキャッシュで`validate-hardware`相当の全検査を各3回実行しました。
+Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォームキャッシュで`validate-hardware`相当の全検査を各3回実行しました。この測定値はレイアウト/CSS検査を追加する前の基準値であり、追加後の性能値としては扱いません。
 
 | 実装 | 1回目 | 2回目 | 3回目 | 中央値 |
 |---|---:|---:|---:|---:|

@@ -3,5 +3,5 @@ set -euo pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-"$script_dir/check-kicad.sh"
-"$script_dir/check-kicad-negative.sh"
+bash "$script_dir/check-kicad.sh"
+bash "$script_dir/check-kicad-negative.sh"

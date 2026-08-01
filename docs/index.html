@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="1 MCU、8P8C、パッシブ右側方式の分割キーボード設計と、調整可能な36キーChoc v1レイアウトの公開資料">
+    <title>Split Keyboard Engineering Notes</title>
+    <link rel="stylesheet" href="assets/document.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">本文へ移動</a>
+
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="../README.md" aria-label="electronics READMEへ">
+          <span class="brand-mark" aria-hidden="true">E</span>
+          <span>electronics / split keyboard</span>
+        </a>
+        <nav aria-label="主要リンク">
+          <a href="layout/README.md">レイアウト</a>
+          <a href="adr/README.md">ADR</a>
+          <a href="08-roadmap.md">ロードマップ</a>
+          <a href="https://github.com/hjosugi/electronics/issues">Issues</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero container">
+        <div>
+          <p class="eyebrow">OPEN HARDWARE DESIGN NOTES</p>
+          <h1>安全性の境界を曖昧にしない、調整可能な分割キーボード。</h1>
+          <p class="lead">
+            1 MCU、8P8C、右側完全パッシブ方式を基礎に、Kinesisの縦列、
+            親指分担、左右分離、段階的tentingという考え方を取り入れます。
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href="layout/README.md">36キーレイアウトを見る</a>
+            <a class="button button-secondary" href="../notebooklm/split-keyboard-hotplug-safety.md">
+              統合Markdownを読む
+            </a>
+          </div>
+        </div>
+
+        <aside class="architecture" aria-label="推奨アーキテクチャ">
+          <p class="architecture-label">v0.1 architecture</p>
+          <pre><code>PC
+└─ USB ─ Left RP2040
+          └─ signal + GND
+             └─ 8P8C
+                └─ Passive right
+
+Center cable:
+NO VCC / 5V / 3V3 / RAW</code></pre>
+        </aside>
+      </section>
+
+      <section class="section container" aria-labelledby="decisions-title">
+        <div class="section-heading">
+          <p class="eyebrow">DECISIONS</p>
+          <h2 id="decisions-title">初号機で固定するもの、利用者が変えられるもの</h2>
+        </div>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3>固定する構造</h3>
+            <ul>
+              <li>36キー、片側3×5+3</li>
+              <li>Kailh PG1350（Choc v1）</li>
+              <li>横18 mm、縦17 mmピッチ</li>
+              <li>単一平面PCB、エンコーダなし</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>調整できる配置</h3>
+            <ul>
+              <li>column stagger</li>
+              <li>各列±3°以内のsplay</li>
+              <li>親指3キーの位置と角度</li>
+              <li>左右間隔120–260 mm、yaw 0–15°</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>ケースで選ぶ姿勢</h3>
+            <ul>
+              <li>tenting 0°、10°、20°</li>
+              <li>左右を肩幅に合わせて配置</li>
+              <li>平面PCBを先に検証</li>
+              <li>true keywellは<a href="https://github.com/hjosugi/electronics/issues/16">Issue #16</a>で比較</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-tinted">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">REPRODUCIBLE LAYOUT</p>
+            <h2>生成後のJSONを手で直さない</h2>
+            <p>
+              標準プロファイルを変更し、同じ生成器からmm正本とKLE表示を作ります。
+              CIはキー数、左右対称、値域、最小中心間隔、生成物同期を検査します。
+            </p>
+          </div>
+
+          <div class="code-panel">
+            <pre><code>make layout
+make check-layout
+make validate</code></pre>
+          </div>
+
+          <dl class="metrics">
+            <div>
+              <dt>36</dt>
+              <dd>total keys</dd>
+            </div>
+            <div>
+              <dt>18 × 17</dt>
+              <dd>pitch, mm</dd>
+            </div>
+            <div>
+              <dt>0 / 10 / 20</dt>
+              <dd>tent steps, deg</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="section container" aria-labelledby="evidence-title">
+        <div class="section-heading">
+          <p class="eyebrow">EVIDENCE BOUNDARY</p>
+          <h2 id="evidence-title">文書、シミュレーション、実機を混同しない</h2>
+        </div>
+
+        <div class="notice" role="note">
+          <h3>まだ「安全」とは断定しません</h3>
+          <p>
+            中央ケーブルに電源線がないことは、TRRS型のVCC–GND短絡経路を減らします。
+            ただし、活線挿抜、ESD、誤配線、PoE誤接続への耐性は別の試験が必要です。
+            PCのUSBポートを故障注入試験には使用しません。
+          </p>
+        </div>
+
+        <ol class="document-list">
+          <li><a href="00-overview.md">要件、結論、安全性の境界</a></li>
+          <li><a href="03-simulation-guide.md">OSS回路シミュレーション手順</a></li>
+          <li><a href="05-hardware-validation.md">実機検証チェックリスト</a></li>
+          <li><a href="07-sources.md">一次資料と更新日</a></li>
+          <li><a href="adr/0002-use-36-key-choc-v1-layout.md">レイアウト決定ADR</a></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <p>hjosugi/electronics — design evidence before manufacture.</p>
+        <a href="https://github.com/hjosugi/electronics">GitHub repository</a>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -30,6 +30,8 @@ Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路E
 
 Issue 08では、初号機にWaveshare RP2040-Zeroモジュールを採用する判断を[ADR 0001](https://github.com/hjosugi/electronics/blob/main/docs/adr/0001-use-waveshare-rp2040-zero.md)へ記録しました。GPIO割り当て、保護回路、QMK設定の合格を先取りする決定ではありません。
 
+Issue 05では、初号機を36キー、Kailh Choc v1、Chocofi基準の18×17 mm配置、エンコーダなしとする判断を[ADR 0002](adr/0002-use-36-key-choc-v1-layout.md)へ記録しました。Kinesisの縦列、独立親指クラスタ、分離、段階的tentingという原則を取り入れ、stagger、splay、親指位置、机上フィット値を[制限付きプロファイル](layout/profiles/balanced-kinesis-inspired.json)から生成します。人体適合、キーキャップ干渉、フットプリント、concave keywellは実機で未検証であり、後続Issueで確認します。
+
 ## フェーズ2: シミュレーションとファームウェア
 
 | Issue | 検証 | 合格の考え方 |
@@ -49,6 +51,8 @@ Issue 11では、電流制限付き電源と専用治具を使って活線挿抜
 - 基板SHA、firmware SHA、ケーブル、測定器の記録
 
 PCのUSBポート、Ethernetスイッチ、PoE機器を故障注入用には使いません。誤接続は机上解析、無通電導通、保護した治具で評価します。
+
+[Issue #16](https://github.com/hjosugi/electronics/issues/16)では、Kinesisの原則をケースへ適用し、平面PCB + 交換式wedgeとtrue keywell候補を比較します。初号機は0°、10°、20°のtentingを先に検証し、concave keywellは配線方式、組立公差、実測計画を伴う別アーキテクチャとして扱います。リポジトリ内の正本は`issues/13-kinesis-keywell-case.md`です。GitHubではIssueとPull Requestが同じ連番を使うため、ファイル番号と公開Issue番号は一致しません。
 
 ## フェーズ4: NotebookLMと発注
 

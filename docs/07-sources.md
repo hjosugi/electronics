@@ -1,6 +1,6 @@
 # 一次資料と更新日
 
-確認日: 2026-07-31
+確認日: 2026-08-01
 
 リンク先は更新されることがあります。製造直前に、版番号、改訂日、採用部品の注文型番を再確認してください。
 
@@ -21,6 +21,12 @@
 
 - [tompi/cheapino](https://github.com/tompi/cheapino)
   1 MCU、8P8C、Japanese duplex matrixの公開作例。
+- [pashutk/chocofi（参照commit）](https://github.com/pashutk/chocofi/tree/273676d11b06785fb5a1a94860a39fc36c38baba)
+  36キー、Choc、3×5+3の物理配置基準。座標の派生範囲とCERN-OHL-P-2.0は`docs/layout/`に記録。
+- [Kinesis Advantage2公式資料](https://kinesis-ergo.com/shop/advantage2/)
+  左右分離、縦列、親指クラスタ、20° tenting、concave keywellのメーカー説明。
+- [Kailh PG1350シリーズ](https://www.kailhswitch.com/info/kailh-kl-switches-pg1350-series-23772219.html)
+  Choc v1のスイッチ型番、操作力、ストロークのメーカー資料。
 - [Salicylic-acid3/KiCAD_FootPrint](https://github.com/Salicylic-acid3/KiCAD_FootPrint)
   自作キーボード向けKiCadフットプリント集。
 - [サリチル酸: GL516デザインガイド](https://zenn.dev/salicylic_acid3/books/gl516_design_guide/)
@@ -46,6 +52,10 @@
   バックエンド比較とngspice推奨。
 - [pfalstad/circuitjs1](https://github.com/pfalstad/circuitjs1)
   Falstad Circuit Simulatorのブラウザ版ソース。
+- [Ergogen: Points](https://docs.ergogen.xyz/points/)
+  column stagger、spread、splay、独立zoneをパラメータ化する公式資料。
+- [Keyboard Layout Editor: serial.js](https://github.com/ijprest/keyboard-layout-editor/blob/580b916084e69e600b2144b0217c8b1d9710daa0/serial.js)
+  KLE Raw dataのメタデータ、座標、回転を扱う公式実装。
 
 ## USB-Cと保護部品
 

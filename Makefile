@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: notebooklm check-notebooklm check-links check check-kicad check-kicad-negative environment simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm layout check-layout check-document-css check-links check check-kicad check-kicad-negative environment simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -8,10 +8,19 @@ notebooklm:
 check-notebooklm:
 	./scripts/check-notebooklm.sh
 
+layout:
+	python3 ./scripts/build-layout.py
+
+check-layout:
+	python3 ./scripts/build-layout.py --check --self-test
+
+check-document-css:
+	python3 ./scripts/check-document-css.py
+
 check-links:
 	./scripts/check-markdown-links.sh
 
-check: check-notebooklm check-links
+check: check-notebooklm check-layout check-document-css check-links
 	./scripts/validate.sh
 
 check-kicad:
