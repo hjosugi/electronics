@@ -4,10 +4,16 @@ on:
   push:
     paths:
       - "hardware/**"
+      - "tests/fixtures/kicad/**"
+      - "scripts/check-kicad*.sh"
+      - "Makefile"
       - ".github/workflows/hardware-ci.yml"
   pull_request:
     paths:
       - "hardware/**"
+      - "tests/fixtures/kicad/**"
+      - "scripts/check-kicad*.sh"
+      - "Makefile"
       - ".github/workflows/hardware-ci.yml"
 
 permissions:
@@ -29,6 +35,7 @@ jobs:
           bash ./scripts/check-markdown-links.sh
           bash ./scripts/validate.sh
           bash ./scripts/check-kicad.sh
+          bash ./scripts/check-kicad-negative.sh
 
           for circuit in \
             spice/rc-transient.cir \
