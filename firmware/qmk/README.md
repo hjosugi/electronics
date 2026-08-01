@@ -10,5 +10,6 @@ The firmware files in this directory are licensed under
 continues to apply to the original documentation, scripts, and simulation
 models outside this directory.
 
-Run `scripts/build-qmk.sh /path/to/qmk_firmware` from the repository root. The
+Run `scripts/build-qmk.sh /path/to/qmk_firmware` from the repository root. It
+runs the shared duplex-scanner GoogleTests and QMK lint before compiling. The
 generated UF2 is copied to `dist/qmk/`, which is intentionally ignored by Git.

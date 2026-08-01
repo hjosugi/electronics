@@ -46,6 +46,8 @@ ngspice感度解析は合格済みです。これはPCB、QMK、活線挿抜、I
 
 Issue 02では、RP2040用の初期36キー定義、固定QMK commit、ローカルUF2、CI artifactを[ファームウェア環境](14-qmk-firmware.md)へ記録します。これはIssue 10の同時押し、抜線、ghosting、2 × 2実機検証を先取りしません。
 
+Issue 10の自動部分では、全36位置、方向切替、右側抜線、ideal-diode ghost pathを[QMK matrixテスト](15-qmk-matrix-tests.md)で検査します。曖昧な半分は前状態へ保留しますが、2 × 2実配線が未実施なのでIssueはopenのままです。
+
 SPICEとQMKテストは別の証拠です。SPICEは電圧・電流を検証し、QMKテストはキー状態を検証します。片方の合格で他方を省略しません。
 
 ## フェーズ3: 実基板

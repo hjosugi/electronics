@@ -38,6 +38,8 @@ fi
 source_keyboard="$repo_root/firmware/qmk/keyboards/electronics/splitkb36"
 target_parent="$qmk_root/keyboards/electronics"
 target_keyboard="$target_parent/splitkb36"
+source_test="$repo_root/firmware/qmk/tests/electronics_splitkb36"
+target_test="$qmk_root/tests/electronics_splitkb36"
 mkdir -p "$target_parent"
 
 if [[ -e "$target_keyboard" || -L "$target_keyboard" ]]; then
@@ -45,17 +47,34 @@ if [[ -e "$target_keyboard" || -L "$target_keyboard" ]]; then
   exit 1
 fi
 
-ln -s "$source_keyboard" "$target_keyboard"
+if [[ -e "$target_test" || -L "$target_test" ]]; then
+  echo "QMK側のtest定義と衝突します: $target_test" >&2
+  exit 1
+fi
+
+keyboard_overlay_created=false
+test_overlay_created=false
 cleanup() {
-  if [[ -L "$target_keyboard" && "$(readlink "$target_keyboard")" == "$source_keyboard" ]]; then
+  if [[ "$test_overlay_created" == true && -d "$target_test" ]]; then
+    find "$target_test" -maxdepth 1 -type f -delete
+    rmdir "$target_test"
+  fi
+  if [[ "$keyboard_overlay_created" == true && -L "$target_keyboard" && "$(readlink "$target_keyboard")" == "$source_keyboard" ]]; then
     unlink "$target_keyboard"
   fi
 }
 trap cleanup EXIT
 
+ln -s "$source_keyboard" "$target_keyboard"
+keyboard_overlay_created=true
+mkdir "$target_test"
+test_overlay_created=true
+cp "$source_test/config.h" "$source_test/test.mk" "$source_test/test_duplex_matrix.cpp" "$target_test/"
+
 jobs="${QMK_JOBS:-$(nproc)}"
 (
   cd "$qmk_root"
+  qmk test-c -j "$jobs" -t electronics_splitkb36
   qmk lint -kb electronics/splitkb36
   qmk compile -j "$jobs" -kb electronics/splitkb36 -km default
 )

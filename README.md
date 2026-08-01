@@ -20,6 +20,7 @@
 - GitHubへ登録する13件のIssue定義と冪等な登録スクリプト
 - KiCad ERC/DRC用とスターター検証用のGitHub Actions
 - RP2040-Zero向け36キーcustom matrix、固定QMK commit、UF2ビルドCI
+- 全36位置、抜線、GPIO方向、ghost pathを検証するQMK native tests
 
 ## 推奨アーキテクチャ
 
@@ -48,8 +49,9 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 13. [検証処理の並列化と性能](docs/12-validation-performance.md)
 14. [36キーmatrix、8P8C pinout、保護回路、安全性](docs/13-matrix-rj45-safety.md)
 15. [RP2040 QMKファームウェア環境](docs/14-qmk-firmware.md)
-16. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
-17. [Architecture Decision Records](docs/adr/README.md)
+16. [QMK duplex matrix自動テストと2 × 2実機計画](docs/15-qmk-matrix-tests.md)
+17. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+18. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
