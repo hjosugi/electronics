@@ -22,16 +22,25 @@ REQUIRED_VARIABLES = {
     "--font-size-h2",
     "--font-size-h1",
     "--font-size-code",
+    "--font-size-metric",
     "--line-height-tight",
     "--line-height-heading",
     "--line-height-body",
     "--line-height-code",
+    "--font-weight-regular",
+    "--font-weight-medium",
+    "--font-weight-semibold",
+    "--font-weight-bold",
+    "--letter-spacing-heading",
+    "--letter-spacing-label",
 }
 
 TOKENIZED_PROPERTIES = {
     "font-size": "--font-size-",
     "font-family": "--font-family-",
     "line-height": "--line-height-",
+    "font-weight": "--font-weight-",
+    "letter-spacing": "--letter-spacing-",
 }
 
 
@@ -41,9 +50,13 @@ def main() -> int:
     errors: list[str] = []
 
     defined = set(re.findall(r"^\s*(--[a-z0-9-]+)\s*:", css, flags=re.MULTILINE))
+    used = set(re.findall(r"var\((--[a-z0-9-]+)", css))
     missing = sorted(REQUIRED_VARIABLES - defined)
+    undefined = sorted(used - defined)
     if missing:
         errors.append(f"必須CSS変数がありません: {', '.join(missing)}")
+    if undefined:
+        errors.append(f"未定義CSS変数を参照しています: {', '.join(undefined)}")
 
     for line_number, line in enumerate(css.splitlines(), start=1):
         for property_name, variable_prefix in TOKENIZED_PROPERTIES.items():
@@ -72,7 +85,7 @@ def main() -> int:
 
     print(
         "ドキュメントCSS検証に合格しました"
-        f"（必須変数: {len(REQUIRED_VARIABLES)}、font-size直書きなし）"
+        f"（必須変数: {len(REQUIRED_VARIABLES)}、タイポグラフィ直書きなし）"
     )
     return 0
 
