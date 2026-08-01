@@ -47,7 +47,7 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
-ブラウザ向けの入口は[ドキュメントページ](docs/index.html)です。色、余白、font-size、line-height、font-familyは[共通CSS変数](docs/assets/document.css)へ集約し、`make check-document-css`で直書きとインラインstyleを検査します。
+ブラウザ向けの入口は[公開ドキュメントページ](https://hjosugi.github.io/electronics/)です。ソースは[`docs/index.html`](docs/index.html)にあり、色、余白、font-size、line-height、font-familyは[共通CSS変数](docs/assets/document.css)へ集約し、`make check-document-css`で直書きとインラインstyleを検査します。
 
 ## ローカル検証
 
