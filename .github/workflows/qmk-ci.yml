@@ -2,6 +2,8 @@ name: qmk-ci
 
 on:
   push:
+    branches:
+      - main
     paths:
       - "firmware/qmk/**"
       - "scripts/build-qmk.sh"
