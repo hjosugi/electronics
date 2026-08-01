@@ -951,7 +951,7 @@ KiCadはPCBまで含む設計の正本、ngspiceは回路挙動の解析エン�
 | 03 repo初期化 | 文書、SPICE、CI、Issueを公開する | main SHA、PUBLIC読戻し、Issue一覧 |
 | 04 ERC/DRC CI | 回路変更ごとの機械検査 | 意図的violationでCIが失敗する証拠 |
 
-Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 02はローカルUF2、Issue 04は意図的violationでCIが失敗する証拠がそろうまで完了扱いにしません。
+Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 04は[PR #15](https://github.com/hjosugi/electronics/pull/15)で意図的violationの検出を確認済みです。Issue 02はローカルUF2ができるまで完了扱いにしません。
 
 ## フェーズ1: 要件と回路
 
@@ -1082,7 +1082,7 @@ nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
 
 ## 確認したパッケージ
 
-2026年7月31日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
+2026年8月1日にCachyOSの`pacman -Si`とArch Linux公式パッケージ情報を確認しました。
 
 | パッケージ | 確認した版 | 用途 |
 |---|---:|---|
@@ -1187,7 +1187,7 @@ make validate-hardware
 
 これによりKiCad 10.0.x、ERC/DRC、RCを含むngspiceモデルを同じジョブで確認できます。空回路のERC成功は環境スモークテストであり、将来の実回路の電気的妥当性や安全性を保証しません。
 
-## 2026年7月31日の検証結果
+## 2026年8月1日の検証結果
 
 Nix storeに取得済みのKiCad 10.0.5とngspice 45を使い、`make validate-hardware`を実行しました。
 
@@ -1220,3 +1220,117 @@ make check-kicad-negative
 negative test用ファイルは`tests/fixtures/kicad/`に隔離し、製造用の`hardware/`検索対象へ混ぜません。スクリプトは単に非ゼロ終了を期待するのではなく、KiCad CLIがviolation時に返す終了コード5と、レポート中の違反IDを両方確認します。構文エラーやクラッシュを「違反検出成功」と誤認しません。
 
 KiBotによるGerber、BOM、PDF生成は、製造用回路図とPCBが確定してから追加します。空回路とnegative fixtureしかない段階では、製造artifactを生成しても発注可能性の証拠にならないためです。
+
+
+---
+
+## CachyOSツールチェーン環境
+
+確認日: 2026-08-01
+
+## 状態を確認する
+
+```bash
+./scripts/check-environment.sh --report
+./scripts/check-environment.sh --require-hardware
+./scripts/check-environment.sh --require-firmware
+```
+
+`--report`は不足を表示しても成功します。`--require-hardware`はKiCad/ngspice、`--require-firmware`はQMKがなければ失敗するため、セットアップ完了の機械的な確認に使えます。
+
+## CachyOS/Archのパッケージ
+
+2026-08-01に、このホストの同期データベースで次を確認しました。
+
+| パッケージ | 確認版 | 用途 |
+| --- | --- | --- |
+| `kicad` | 10.0.5-1.1 | 回路図、PCB、ERC/DRC、GUIシミュレータ |
+| `kicad-library` | 10.0.5-1 | シンボル、フットプリント、テンプレート |
+| `kicad-library-3d` | 10.0.5-1 | 3Dモデル、任意 |
+| `ngspice` | 46-2.1 | `.cir`のCLI再現実行 |
+| `qmk` | 1.2.0-2 | QMK CLIとクロスツールチェーン |
+
+KiCad 3Dライブラリは展開後約3.2 GBです。回路図・PCB・SPICEを先に始めるだけなら省略し、ケース干渉や3D確認を始める時点で追加できます。
+
+### ホストへ導入
+
+CachyOSのGUI認証が動く端末で実行します。
+
+```bash
+pkexec pacman -S --needed kicad kicad-library ngspice qmk
+```
+
+3Dモデルも必要なら追加します。
+
+```bash
+pkexec pacman -S --needed kicad-library-3d
+```
+
+導入後:
+
+```bash
+kicad-cli version
+ngspice --version
+qmk --version
+./scripts/check-environment.sh --require-all
+```
+
+`qmk setup`はQMK firmwareをユーザーディレクトリへcloneするため、保存先を確認してから別途実行します。
+
+## root不要のSPICE検証
+
+ホストへ恒久インストールせず、現在の文書・スクリプト・SPICEモデルだけを検証する場合:
+
+```bash
+nix shell nixpkgs#ngspice nixpkgs#shellcheck -c make validate
+```
+
+このコマンドはngspice 45で実行済みです。測定値は[基準結果](../docs/09-simulation-results.md)に記録しています。KiCad GUI、QMKのUF2ビルド、実機USB接続はこのコマンドの検証範囲外です。
+
+## エージェント実行環境の制約
+
+今回のエージェント環境では、`pkexec`のsetuid属性が無効化されており、ホストへのpacman導入は実行できませんでした。またNix daemonとDocker/Podman socketも一部のサンドボックス呼び出しから拒否されます。
+
+これはパッケージ不在や回路の失敗ではありません。Issue #1はCLI/CIでERCとRC過渡解析まで確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue #2は、QMK環境を導入してUF2をビルドするまで未完了です。
+
+
+---
+
+## 検証処理の並列化と性能
+
+`make validate`と`make validate-hardware`は、互いに独立した検査を同時実行します。高速化のために検査を省略せず、各プロセスのログを一時ファイルへ分離してから決まった順序で表示します。
+
+## 並列化の境界
+
+[`scripts/run-validation.sh`](../scripts/run-validation.sh)は次を並列実行します。
+
+- NotebookLM統合Markdownの再生成差分
+- Markdownローカルリンク
+- Bash構文、ShellCheck、Issue形式、`git diff --check`
+- ngspiceモデル
+- KiCad ERC/DRC一式（`validate-hardware`のみ）
+
+[`scripts/check-spice.sh`](../scripts/check-spice.sh)は4回路を並列実行し、成功時は測定値だけを表示します。失敗時は該当回路の完全なngspiceログを表示します。
+
+KiCadの通常検査とnegative testは、KiCad CLIのインスタンスロック競合を避けるため、[`scripts/check-kicad-suite.sh`](../scripts/check-kicad-suite.sh)の中で順番に実行します。KiCad一式は、他の検査とは並列に動きます。
+
+## 2026年8月1日の測定
+
+Nix storeのKiCad 10.0.5、ngspice 45、ShellCheck 0.11.0を使い、ウォームキャッシュで`validate-hardware`相当の全検査を各3回実行しました。
+
+| 実装 | 1回目 | 2回目 | 3回目 | 中央値 |
+|---|---:|---:|---:|---:|
+| 完全直列 | 5,487 ms | 5,485 ms | 4,587 ms | 5,485 ms |
+| 並列ランナー | 3,181 ms | 3,097 ms | 2,722 ms | 3,097 ms |
+
+中央値では約44%短縮しました。この値は当該ホストと負荷状況での参考値であり、GitHub Actionsや別CPUで同じ比率になる保証はありません。
+
+## CIの無駄な実行を減らす
+
+`starter-ci`と`hardware-ci`にはref単位の`concurrency`を設定しています。同じブランチへ新しいcommitがpushされた場合、古い実行をキャンセルし、最新commitの検証を優先します。
+
+性能変更後も、次のコマンドが合格することを必須とします。
+
+```bash
+make validate-hardware
+```

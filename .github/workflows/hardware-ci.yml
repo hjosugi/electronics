@@ -5,19 +5,25 @@ on:
     paths:
       - "hardware/**"
       - "tests/fixtures/kicad/**"
-      - "scripts/check-kicad*.sh"
+      - "scripts/**"
+      - "spice/**"
       - "Makefile"
       - ".github/workflows/hardware-ci.yml"
   pull_request:
     paths:
       - "hardware/**"
       - "tests/fixtures/kicad/**"
-      - "scripts/check-kicad*.sh"
+      - "scripts/**"
+      - "spice/**"
       - "Makefile"
       - ".github/workflows/hardware-ci.yml"
 
 permissions:
   contents: read
+
+concurrency:
+  group: hardware-ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   erc-drc:
@@ -29,20 +35,4 @@ jobs:
       - uses: actions/checkout@v6
       - name: KiCad 10・ERC/DRC・ngspice
         shell: bash
-        run: |
-          set -euo pipefail
-          bash ./scripts/check-notebooklm.sh
-          bash ./scripts/check-markdown-links.sh
-          bash ./scripts/validate.sh
-          bash ./scripts/check-kicad.sh
-          bash ./scripts/check-kicad-negative.sh
-
-          for circuit in \
-            spice/rc-transient.cir \
-            spice/trrs-vcc-short.cir \
-            spice/gpio-series-resistors.cir \
-            spice/passive-connector-bounce.cir
-          do
-            echo "==> $circuit"
-            ngspice -b "$circuit"
-          done
+        run: bash ./scripts/run-validation.sh --hardware

@@ -6,13 +6,15 @@ cd "$repo_root"
 
 known_labels="env repo ci hardware firmware simulation safety test decision docs"
 issue_count=0
+scripts=(scripts/*.sh)
 
-for script in scripts/*.sh; do
+for script in "${scripts[@]}"; do
   bash -n "$script"
-  if command -v shellcheck >/dev/null; then
-    shellcheck "$script"
-  fi
 done
+
+if command -v shellcheck >/dev/null; then
+  shellcheck "${scripts[@]}"
+fi
 
 for issue in issues/[0-9][0-9]-*.md; do
   title="$(sed -n '1s/^# //p' "$issue")"

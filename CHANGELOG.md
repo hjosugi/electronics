@@ -5,6 +5,9 @@
 - KiCad 10.0.xの版確認、空回路ERC、RC過渡解析を再現する環境スモークテストを追加
 - `hardware-ci`を実ファイルに対するERC/DRC violationで失敗する構成へ更新
 - ERC/DRC violation fixtureと終了コード5を確認するnegative testを追加
+- 初号機へWaveshare RP2040-Zeroを採用する判断をADRへ記録
+- CachyOS向けの環境診断と、KiCad/ngspice/QMKの確認済み導入手順を追加
+- 独立した検証とSPICE回路を並列化し、CIの重複実行を自動キャンセル
 
 ## 0.1.0 - 2026-08-01
 

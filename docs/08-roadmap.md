@@ -15,7 +15,7 @@
 | 03 repo初期化 | 文書、SPICE、CI、Issueを公開する | main SHA、PUBLIC読戻し、Issue一覧 |
 | 04 ERC/DRC CI | 回路変更ごとの機械検査 | 意図的violationでCIが失敗する証拠 |
 
-Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 02はローカルUF2、Issue 04は意図的violationでCIが失敗する証拠がそろうまで完了扱いにしません。
+Issue 01は[PR #13](https://github.com/hjosugi/electronics/pull/13)で空回路ERCとRC過渡解析を確認済みですが、ホスト上のKiCad GUI確認が残っています。Issue 03は初回公開とIssue登録を確認済みです。Issue 04は[PR #15](https://github.com/hjosugi/electronics/pull/15)で意図的violationの検出を確認済みです。Issue 02はローカルUF2ができるまで完了扱いにしません。
 
 ## フェーズ1: 要件と回路
 

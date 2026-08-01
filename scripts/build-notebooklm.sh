@@ -17,6 +17,8 @@ documents=(
   docs/08-roadmap.md
   docs/09-simulation-results.md
   docs/10-kicad-environment.md
+  docs/11-toolchain-environment.md
+  docs/12-validation-performance.md
 )
 
 mkdir -p -- "$(dirname -- "$output")"
@@ -32,7 +34,10 @@ trap 'rm -f -- "$temporary"' EXIT
 
   for document in "${documents[@]}"; do
     printf '\n\n---\n\n'
-    sed '1s/^# /## /' "$repo_root/$document"
+    sed -E \
+      -e '1s/^# /## /' \
+      -e 's#\]\(([[:alnum:]_-][^:)]*\.md[^)]*)\)#](../docs/\1)#g' \
+      "$repo_root/$document"
   done
 } >"$temporary"
 

@@ -1,12 +1,6 @@
 SHELL := /usr/bin/env bash
 
-SPICE_FILES := \
-	spice/rc-transient.cir \
-	spice/trrs-vcc-short.cir \
-	spice/gpio-series-resistors.cir \
-	spice/passive-connector-bounce.cir
-
-.PHONY: notebooklm check-notebooklm check-links check check-kicad check-kicad-negative simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm check-links check check-kicad check-kicad-negative environment simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -26,16 +20,17 @@ check-kicad:
 check-kicad-negative:
 	bash ./scripts/check-kicad-negative.sh
 
+environment:
+	bash ./scripts/check-environment.sh --report
+
 simulate:
-	@command -v ngspice >/dev/null || { echo "ngspice が必要です" >&2; exit 1; }
-	@set -euo pipefail; for circuit in $(SPICE_FILES); do \
-		echo "==> $$circuit"; \
-		ngspice -b "$$circuit"; \
-	done
+	./scripts/check-spice.sh
 
-validate: check simulate
+validate:
+	./scripts/run-validation.sh --base
 
-validate-hardware: check check-kicad check-kicad-negative simulate
+validate-hardware:
+	./scripts/run-validation.sh --hardware
 
 package:
 	@test -n "$(VERSION)" || { echo "VERSION=v0.1.0 のように指定してください" >&2; exit 1; }
