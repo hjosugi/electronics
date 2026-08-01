@@ -10,6 +10,8 @@ if [[ -z "$qmk_root" ]]; then
 fi
 
 qmk_root="$(realpath "$qmk_root")"
+# The repository root is computed at runtime, so ShellCheck cannot follow it.
+# shellcheck disable=SC1091
 source "$repo_root/firmware/qmk/qmk-version.env"
 
 if [[ ! -d "$qmk_root/.git" ]]; then
