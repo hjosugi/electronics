@@ -6,7 +6,7 @@ SPICE_FILES := \
 	spice/gpio-series-resistors.cir \
 	spice/passive-connector-bounce.cir
 
-.PHONY: notebooklm check-notebooklm check-links check check-kicad environment simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm check-links check check-kicad simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -22,9 +22,6 @@ check: check-notebooklm check-links
 
 check-kicad:
 	bash ./scripts/check-kicad.sh
-
-environment:
-	bash ./scripts/check-environment.sh --report
 
 simulate:
 	@command -v ngspice >/dev/null || { echo "ngspice が必要です" >&2; exit 1; }
