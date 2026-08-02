@@ -24,6 +24,7 @@ documents=(
   docs/15-qmk-matrix-tests.md
   docs/16-notebooklm-order-readiness.md
   docs/17-breadboard-matrix-test.md
+  docs/18-project-evidence-graph.md
   docs/layout/README.md
   docs/adr/0001-use-waveshare-rp2040-zero.md
   docs/adr/0002-use-36-key-choc-v1-layout.md
