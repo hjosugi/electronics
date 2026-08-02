@@ -40,6 +40,7 @@ start_check() {
 start_check "NotebookLM" ./scripts/check-notebooklm.sh
 start_check "Layout" python3 ./scripts/build-layout.py --check --self-test
 start_check "Document CSS" python3 ./scripts/check-document-css.py
+start_check "Project graph" python3 ./scripts/check-project-graph.py --self-test
 start_check "QMK source" python3 ./scripts/check-qmk-source.py
 start_check "Markdown links" ./scripts/check-markdown-links.sh
 start_check "Static validation" ./scripts/validate.sh

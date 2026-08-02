@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-08-02",
+  "title": "Split keyboard issue and evidence graph",
+  "nodes": [
+    {
+      "id": "issue-1",
+      "label": "Issue #1 KiCad host環境",
+      "kind": "issue",
+      "status": "blocked",
+      "stage": "implementation",
+      "url": "https://github.com/hjosugi/electronics/issues/1",
+      "summary": "CachyOS hostへのKiCad導入は管理者権限待ち。NixとCIの検証は別証拠。"
+    },
+    {
+      "id": "issue-10",
+      "label": "Issue #10 matrix実機",
+      "kind": "issue",
+      "status": "blocked",
+      "stage": "verification",
+      "url": "https://github.com/hjosugi/electronics/issues/10",
+      "summary": "QMK自動テストは済み、2 × 2 breadboardの実測が未完。"
+    },
+    {
+      "id": "issue-11",
+      "label": "Issue #11 活線挿抜",
+      "kind": "issue",
+      "status": "blocked",
+      "stage": "verification",
+      "url": "https://github.com/hjosugi/electronics/issues/11",
+      "summary": "8P8C、2 m cable、100回挿抜、電流とGPIOの実測が未完。"
+    },
+    {
+      "id": "issue-12",
+      "label": "Issue #12 NotebookLM / 発注",
+      "kind": "issue",
+      "status": "blocked",
+      "stage": "publication",
+      "url": "https://github.com/hjosugi/electronics/issues/12",
+      "summary": "チェックリストは公開済み。NotebookLM実操作と製造成果物が未完。"
+    },
+    {
+      "id": "issue-16",
+      "label": "Issue #16 keywell / tent",
+      "kind": "issue",
+      "status": "open",
+      "stage": "implementation",
+      "url": "https://github.com/hjosugi/electronics/issues/16",
+      "summary": "平面wedgeとtrue keywell候補の比較、モック、実測を追跡。"
+    },
+    {
+      "id": "issue-24",
+      "label": "Issue #24 evidence graph",
+      "kind": "issue",
+      "status": "open",
+      "stage": "publication",
+      "url": "https://github.com/hjosugi/electronics/issues/24",
+      "summary": "curated dataとPages表示を分離した依存graphを追跡。"
+    },
+    {
+      "id": "adr-1",
+      "label": "ADR 0001 RP2040-Zero",
+      "kind": "decision",
+      "status": "verified",
+      "stage": "decision",
+      "url": "https://github.com/hjosugi/electronics/blob/main/docs/adr/0001-use-waveshare-rp2040-zero.md",
+      "summary": "初号機MCU moduleをWaveshare RP2040-Zeroに固定。"
+    },
+    {
+      "id": "adr-2",
+      "label": "ADR 0002 36-key Choc v1",
+      "kind": "decision",
+      "status": "verified",
+      "stage": "decision",
+      "url": "https://github.com/hjosugi/electronics/blob/main/docs/adr/0002-use-36-key-choc-v1-layout.md",
+      "summary": "36キー、Choc v1、平面PCB、調整可能レイアウトを固定。"
+    },
+    {
+      "id": "adr-3",
+      "label": "ADR 0003 470Ω + TVS",
+      "kind": "decision",
+      "status": "verified",
+      "stage": "decision",
+      "url": "https://github.com/hjosugi/electronics/blob/main/docs/adr/0003-use-470-ohm-and-dual-ended-tvs.md",
+      "summary": "中央無給電、470 Ω x6、左右両端TVSを採用。"
+    },
+    {
+      "id": "circuit-v02",
+      "label": "v0.2 参照回路",
+      "kind": "artifact",
+      "status": "verified",
+      "stage": "implementation",
+      "url": "https://github.com/hjosugi/electronics/releases/tag/v0.2.0",
+      "summary": "KiCad ERC済みの36キーpassive-right参照回路。製造PCBではない。"
+    },
+    {
+      "id": "firmware-v031",
+      "label": "v0.3.1 QMK UF2",
+      "kind": "release",
+      "status": "verified",
+      "stage": "implementation",
+      "url": "https://github.com/hjosugi/electronics/releases/tag/v0.3.1",
+      "summary": "固定QMK commitから生成したUF2とghost filter。実配線は未検証。"
+    },
+    {
+      "id": "qmk-tests",
+      "label": "QMK native tests",
+      "kind": "evidence",
+      "status": "verified",
+      "stage": "verification",
+      "url": "https://github.com/hjosugi/electronics/actions/runs/30717715662",
+      "summary": "全36位置、抜線、方向安全性、ghost pathの自動テスト6件。"
+    },
+    {
+      "id": "breadboard-evidence",
+      "label": "2 × 2 breadboard実測",
+      "kind": "evidence",
+      "status": "planned",
+      "stage": "verification",
+      "url": "https://hjosugi.github.io/electronics/17-breadboard-matrix-test.md",
+      "summary": "左右single/pair/ghost/信号抜線の実測。手順のみ公開済み。"
+    },
+    {
+      "id": "hotplug-evidence",
+      "label": "8P8C 100回活線挿抜",
+      "kind": "evidence",
+      "status": "planned",
+      "stage": "verification",
+      "url": "https://github.com/hjosugi/electronics/issues/11",
+      "summary": "専用治具で電流、3V3、GPIO、誤入力、USB再列挙を測る。"
+    },
+    {
+      "id": "notebooklm-evidence",
+      "label": "NotebookLM引用smoke",
+      "kind": "evidence",
+      "status": "planned",
+      "stage": "verification",
+      "url": "https://hjosugi.github.io/electronics/16-notebooklm-order-readiness.md",
+      "summary": "統合資料と一次資料の引用範囲を実notebookで確認する。"
+    },
+    {
+      "id": "production-pcb",
+      "label": "製造PCB / Gerber / BOM",
+      "kind": "artifact",
+      "status": "planned",
+      "stage": "implementation",
+      "url": "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json",
+      "summary": "製造用PCBと同一snapshotのERC/DRC、Gerber、drill、PDF、BOM。"
+    },
+    {
+      "id": "order-ready",
+      "label": "発注READY gate",
+      "kind": "gate",
+      "status": "blocked",
+      "stage": "publication",
+      "url": "https://hjosugi.github.io/electronics/16-notebooklm-order-readiness.md",
+      "summary": "16 blockerを追跡。全条件が揃うまでNOT READY。"
+    },
+    {
+      "id": "release-v040",
+      "label": "v0.4.0 docs/process",
+      "kind": "release",
+      "status": "verified",
+      "stage": "publication",
+      "url": "https://github.com/hjosugi/electronics/releases/tag/v0.4.0",
+      "summary": "breadboard手順と発注gateをexact main SHAで公開。"
+    },
+    {
+      "id": "pages-site",
+      "label": "GitHub Pages",
+      "kind": "artifact",
+      "status": "verified",
+      "stage": "publication",
+      "url": "https://hjosugi.github.io/electronics/",
+      "summary": "設計境界、回路、firmware、実機入口を追加サービスなしで公開。"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e01",
+      "source": "adr-1",
+      "target": "firmware-v031",
+      "relation": "defines",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/docs/adr/0001-use-waveshare-rp2040-zero.md",
+        "https://github.com/hjosugi/electronics/releases/tag/v0.3.1"
+      ],
+      "note": "MCU platformとGPIO namingを固定する。"
+    },
+    {
+      "id": "e02",
+      "source": "adr-2",
+      "target": "issue-16",
+      "relation": "defines",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/docs/adr/0002-use-36-key-choc-v1-layout.md",
+        "https://github.com/hjosugi/electronics/issues/16"
+      ],
+      "note": "平面PCBを初号機とし、keywell比較を後続へ分離した。"
+    },
+    {
+      "id": "e03",
+      "source": "adr-3",
+      "target": "circuit-v02",
+      "relation": "defines",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/docs/adr/0003-use-470-ohm-and-dual-ended-tvs.md",
+        "https://github.com/hjosugi/electronics/releases/tag/v0.2.0"
+      ],
+      "note": "中央無給電、470 Ω、両端TVSを参照回路へ固定した。"
+    },
+    {
+      "id": "e04",
+      "source": "qmk-tests",
+      "target": "firmware-v031",
+      "relation": "validates",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/actions/runs/30717715662",
+        "https://github.com/hjosugi/electronics/pull/22"
+      ],
+      "note": "software上の36位置、抜線、方向、ghostだけを検証する。"
+    },
+    {
+      "id": "e05",
+      "source": "issue-10",
+      "target": "breadboard-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/10",
+        "https://github.com/hjosugi/electronics/blob/main/docs/17-breadboard-matrix-test.md"
+      ],
+      "note": "実配線の写真、電流、全入力logが必要。"
+    },
+    {
+      "id": "e06",
+      "source": "breadboard-evidence",
+      "target": "firmware-v031",
+      "relation": "validates",
+      "confidence": "inferred",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/10"
+      ],
+      "note": "実測前なので、検証する予定の関係として表示する。"
+    },
+    {
+      "id": "e07",
+      "source": "issue-11",
+      "target": "hotplug-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/11"
+      ],
+      "note": "専用治具と完成相当8P8C配線が必要。"
+    },
+    {
+      "id": "e08",
+      "source": "issue-12",
+      "target": "notebooklm-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/12"
+      ],
+      "note": "実notebookの作成と引用smoke testが必要。"
+    },
+    {
+      "id": "e09",
+      "source": "issue-12",
+      "target": "production-pcb",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/12",
+        "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json"
+      ],
+      "note": "製造PCBと出力artifactが存在しない。"
+    },
+    {
+      "id": "e10",
+      "source": "order-ready",
+      "target": "breadboard-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json"
+      ],
+      "note": "Issue #10 physicalを必須gateとする。"
+    },
+    {
+      "id": "e11",
+      "source": "order-ready",
+      "target": "hotplug-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json"
+      ],
+      "note": "Issue #11 hotplugを必須gateとする。"
+    },
+    {
+      "id": "e12",
+      "source": "order-ready",
+      "target": "notebooklm-evidence",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json"
+      ],
+      "note": "NotebookLM notebookとcitation smokeを必須gateとする。"
+    },
+    {
+      "id": "e13",
+      "source": "order-ready",
+      "target": "production-pcb",
+      "relation": "blocked_by",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/blob/main/production/order-readiness.json"
+      ],
+      "note": "PCB、ERC/DRC、Gerber、drill、PDF、BOM、viewerを必須とする。"
+    },
+    {
+      "id": "e14",
+      "source": "release-v040",
+      "target": "pages-site",
+      "relation": "publishes",
+      "confidence": "verified",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/actions/runs/30735328021",
+        "https://github.com/hjosugi/electronics/releases/tag/v0.4.0"
+      ],
+      "note": "exact commitのdocsをPages deploymentへ公開した。"
+    },
+    {
+      "id": "e15",
+      "source": "issue-24",
+      "target": "pages-site",
+      "relation": "publishes",
+      "confidence": "inferred",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/24"
+      ],
+      "note": "PR、CI、live read-back完了後にverifiedへ更新する。"
+    },
+    {
+      "id": "e16",
+      "source": "issue-16",
+      "target": "production-pcb",
+      "relation": "may_change",
+      "confidence": "inferred",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/16"
+      ],
+      "note": "true keywell採用時だけPCB分割や配線方式が変わる可能性がある。"
+    },
+    {
+      "id": "e17",
+      "source": "production-pcb",
+      "target": "issue-1",
+      "relation": "depends_on",
+      "confidence": "inferred",
+      "evidence": [
+        "https://github.com/hjosugi/electronics/issues/1",
+        "https://github.com/hjosugi/electronics/blob/main/docs/10-kicad-environment.md"
+      ],
+      "note": "ローカルGUI編集経路では必要だが、Nix/CIなど代替経路があるため未確定。"
+    }
+  ]
+}

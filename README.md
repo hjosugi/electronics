@@ -21,6 +21,7 @@
 - KiCad ERC/DRC用とスターター検証用のGitHub Actions
 - RP2040-Zero向け36キーcustom matrix、固定QMK commit、UF2ビルドCI
 - 全36位置、抜線、GPIO方向、ghost pathを検証するQMK native tests
+- Issue、ADR、証拠、発注blockerを根拠付きedgeで結ぶ静的project graph
 
 ## 推奨アーキテクチャ
 
@@ -52,8 +53,9 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 16. [QMK duplex matrix自動テストと2 × 2実機計画](docs/15-qmk-matrix-tests.md)
 17. [NotebookLM入力とPCB発注readyチェックリスト](docs/16-notebooklm-order-readiness.md)
 18. [2 × 2 breadboardでJapanese duplex matrixを試す](docs/17-breadboard-matrix-test.md)
-19. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
-20. [Architecture Decision Records](docs/adr/README.md)
+19. [Issue依存・証拠graph](docs/18-project-evidence-graph.md)
+20. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+21. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -67,7 +69,7 @@ ngspiceが導入済みなら、全チェックを実行できます。
 make validate
 ```
 
-`make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、QMK定義、Markdownリンク、静的検査、SPICEモデルを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
+`make validate`はNotebookLM、レイアウト生成物、ドキュメントCSS、project graph、QMK定義、Markdownリンク、静的検査、SPICEモデル、発注gateを並列実行します。KiCadのERC/DRCとnegative testまで含める場合は`make validate-hardware`を使います。
 
 `make validate-hardware`は参照回路のXML netlistも検査し、8P8Cへ電源netが入っていないこと、
 470 Ωが6本あること、全36キーのダイオード極性、左右両端のTVS接続を確認します。

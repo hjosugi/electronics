@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: notebooklm check-notebooklm layout check-layout check-document-css check-links check-qmk build-qmk check check-kicad check-kicad-negative check-safety-schematic environment order-readiness simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm layout check-layout check-document-css check-project-graph check-links check-qmk build-qmk check check-kicad check-kicad-negative check-safety-schematic environment order-readiness simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -17,6 +17,9 @@ check-layout:
 check-document-css:
 	python3 ./scripts/check-document-css.py
 
+check-project-graph:
+	python3 ./scripts/check-project-graph.py --self-test
+
 check-links:
 	./scripts/check-markdown-links.sh
 
@@ -27,7 +30,7 @@ build-qmk:
 	@test -n "$(QMK_HOME)" || { echo "QMK_HOME=/path/to/qmk_firmware を指定してください" >&2; exit 1; }
 	./scripts/build-qmk.sh "$(QMK_HOME)"
 
-check: check-notebooklm check-layout check-document-css check-links check-qmk
+check: check-notebooklm check-layout check-document-css check-project-graph check-links check-qmk
 	./scripts/validate.sh
 
 check-kicad:

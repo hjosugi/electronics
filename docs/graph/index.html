@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="分割キーボードの設計判断、Issue、検証証拠、発注blockerを根拠付き有向graphで追跡する">
+    <title>Issue and Evidence Graph | Split Keyboard Engineering Notes</title>
+    <link rel="canonical" href="https://hjosugi.github.io/electronics/graph/">
+    <link rel="stylesheet" href="../assets/document.css">
+    <link rel="stylesheet" href="../assets/graph.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">本文へ移動</a>
+
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="../index.html" aria-label="ドキュメントトップへ">
+          <span class="brand-mark" aria-hidden="true">E</span>
+          <span>electronics / evidence graph</span>
+        </a>
+        <nav aria-label="主要リンク">
+          <a href="../index.html">トップ</a>
+          <a href="../18-project-evidence-graph.md">仕様</a>
+          <a href="https://github.com/hjosugi/electronics/issues/24">Issue #24</a>
+          <a href="https://github.com/hjosugi/electronics">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="hero container graph-hero">
+        <p class="eyebrow">DIRECTED EVIDENCE MAP</p>
+        <h1>止まっている理由を、根拠付きedgeで辿る。</h1>
+        <p class="lead">
+          設計判断、実装、検証、公開物を分離し、verifiedとinferredを混同しない
+          project graphです。発注gateのblockerも同じ画面で確認できます。
+        </p>
+      </section>
+
+      <section class="section container graph-workspace" aria-labelledby="filters-title">
+        <div class="section-heading">
+          <p class="eyebrow">FILTER</p>
+          <h2 id="filters-title">nodeとedgeを絞り込む</h2>
+        </div>
+
+        <form class="graph-controls" id="graph-controls">
+          <label>
+            <span>検索</span>
+            <input id="graph-search" name="search" type="search" placeholder="Issue、発注、ghost、ADR">
+          </label>
+          <label>
+            <span>node kind</span>
+            <select id="kind-filter" name="kind">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            <span>status</span>
+            <select id="status-filter" name="status">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            <span>relation</span>
+            <select id="relation-filter" name="relation">
+              <option value="">すべて</option>
+            </select>
+          </label>
+          <label>
+            <span>confidence</span>
+            <select id="confidence-filter" name="confidence">
+              <option value="">すべて</option>
+              <option value="verified">verified</option>
+              <option value="inferred">inferred</option>
+            </select>
+          </label>
+          <button class="button button-secondary" id="reset-filters" type="reset">条件をリセット</button>
+        </form>
+
+        <p class="graph-summary" id="graph-summary" role="status" aria-live="polite">graphを読み込んでいます。</p>
+
+        <div class="graph-legend" aria-label="graph凡例">
+          <span><i class="legend-node status-verified" aria-hidden="true"></i> verified</span>
+          <span><i class="legend-node status-blocked" aria-hidden="true"></i> blocked</span>
+          <span><i class="legend-line relation-blocked-by" aria-hidden="true"></i> blocked_by</span>
+          <span><i class="legend-line confidence-inferred" aria-hidden="true"></i> inferred</span>
+        </div>
+
+        <div class="graph-canvas" tabindex="0" aria-label="Issueと証拠の有向graph。nodeまたはedgeを選ぶと詳細を表示します。">
+          <svg
+            id="project-graph"
+            class="graph-svg"
+            role="img"
+            aria-labelledby="graph-svg-title graph-svg-description">
+            <title id="graph-svg-title">Split keyboard issue and evidence graph</title>
+            <desc id="graph-svg-description">設計判断から実装、検証、公開への関係と未完blockerを示します。</desc>
+            <defs>
+              <marker id="arrow-head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M 0 0 L 8 4 L 0 8 z"></path>
+              </marker>
+            </defs>
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </svg>
+        </div>
+      </section>
+
+      <section class="section section-tinted">
+        <div class="container graph-detail-grid">
+          <article class="graph-detail" aria-labelledby="detail-title">
+            <p class="eyebrow">SELECTION</p>
+            <h2 id="detail-title">nodeまたはedgeの詳細</h2>
+            <div id="detail-content">
+              <p>graph上の項目を選択してください。根拠URL、確度、注記をここに表示します。</p>
+            </div>
+          </article>
+
+          <article class="graph-detail" aria-labelledby="edge-table-title">
+            <p class="eyebrow">VISIBLE EDGES</p>
+            <h2 id="edge-table-title">表示中の関係</h2>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">source</th>
+                    <th scope="col">relation</th>
+                    <th scope="col">target</th>
+                    <th scope="col">確度</th>
+                  </tr>
+                </thead>
+                <tbody id="edge-table-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <noscript>
+        <section class="section container">
+          <div class="notice">
+            <h2>JavaScriptが無効です</h2>
+            <p><a href="project-graph.json">正本JSON</a>または<a href="../18-project-evidence-graph.md">graph仕様</a>を参照してください。</p>
+          </div>
+        </section>
+      </noscript>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-row">
+        <p>hjosugi/electronics — evidence edges do not replace physical tests.</p>
+        <a href="../18-project-evidence-graph.md">更新規則</a>
+      </div>
+    </footer>
+
+    <script type="module" src="graph.js"></script>
+  </body>
+</html>
