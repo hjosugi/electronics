@@ -7,6 +7,8 @@
 - QMK lint、GPIO/論理matrix静的検査、GPL-2.0-or-later通知を追加
 - 全36位置、抜線、方向安全性、ghost経路を検査するQMK GoogleTestを追加
 - 曖昧な交互ダイオード経路を半分単位で保留する保守的ghost filterを追加
+- NotebookLMへ採用ADRを含め、製造snapshotと発注blockerを機械判定するready manifestを追加
+- 2 × 2 breadboardの8キー配線、段階通電、左右試験、ghost、抜線、波形の実施手順を追加
 
 ## 0.2.0 - 2026-08-01
 

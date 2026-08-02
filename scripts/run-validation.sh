@@ -44,6 +44,7 @@ start_check "QMK source" python3 ./scripts/check-qmk-source.py
 start_check "Markdown links" ./scripts/check-markdown-links.sh
 start_check "Static validation" ./scripts/validate.sh
 start_check "ngspice" ./scripts/check-spice.sh
+start_check "Order readiness" python3 ./scripts/check-order-readiness.py --json
 
 if [[ "$mode" == "--hardware" ]]; then
   start_check "KiCad ERC/DRC" ./scripts/check-kicad-suite.sh
