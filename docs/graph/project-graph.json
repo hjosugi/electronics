@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "review_date": "2026-08-02",
+  "review_date": "2026-08-01",
   "title": "Split keyboard issue and evidence graph",
   "nodes": [
     {
@@ -52,10 +52,10 @@
       "id": "issue-24",
       "label": "Issue #24 evidence graph",
       "kind": "issue",
-      "status": "open",
+      "status": "verified",
       "stage": "publication",
       "url": "https://github.com/hjosugi/electronics/issues/24",
-      "summary": "curated dataとPages表示を分離した依存graphを追跡。"
+      "summary": "curated data、Pages表示、filter model testを分離した依存graph。"
     },
     {
       "id": "adr-1",
@@ -342,11 +342,13 @@
       "source": "issue-24",
       "target": "pages-site",
       "relation": "publishes",
-      "confidence": "inferred",
+      "confidence": "verified",
       "evidence": [
-        "https://github.com/hjosugi/electronics/issues/24"
+        "https://github.com/hjosugi/electronics/pull/25",
+        "https://github.com/hjosugi/electronics/actions/runs/30738100545",
+        "https://hjosugi.github.io/electronics/graph/"
       ],
-      "note": "PR、CI、live read-back完了後にverifiedへ更新する。"
+      "note": "exact mainのCIとPages deployment成功後、公開HTMLと正本JSONを読み戻した。"
     },
     {
       "id": "e16",

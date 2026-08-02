@@ -2110,13 +2110,13 @@ Issue #10へ次を添付またはcommitします。
 
 ## Issue依存・証拠graph
 
-確認日: 2026-08-02
+確認日: 2026-08-01
 
 ## 目的
 
 [公開graph](../docs/graph)は、設計判断、実装、検証、公開物を有向edgeで結び、現在止まっている理由を検索できるようにします。GitHub Pages上で完結し、追加サービス、CDN、外部JavaScript frameworkは使いません。
 
-データの正本は[`project-graph.json`](../docs/graph/project-graph.json)、表示は[`index.html`](../docs/graph/index.html)と[`graph.js`](../docs/graph/graph.js)です。手書きの解説と表示ロジックを分離し、自動処理がcuratedな関係を上書きしない構造にします。
+データの正本は[`project-graph.json`](../docs/graph/project-graph.json)、表示は[`index.html`](../docs/graph/index.html)と[`graph.js`](../docs/graph/graph.js)、検索・絞り込み規則は[`graph-model.mjs`](../docs/graph/graph-model.mjs)です。手書きの解説、表示、データ処理を分離し、自動処理がcuratedな関係を上書きしない構造にします。
 
 ## node
 
@@ -2170,7 +2170,7 @@ make check-project-graph
 python3 scripts/check-project-graph.py --self-test
 ```
 
-検査はschema、enum、ID重複、dangling edge、self-loop、根拠URL、発注gateの必須blockerを確認します。表示側はJSONを読み取るだけで、状態を推測して書き換えません。
+検査はschema、enum、ID重複、dangling edge、self-loop、根拠URL、発注gateの必須blockerを確認します。Node.jsがある環境では、既定表示、issue status、relation、confidence、全文検索のmodel test 5件も実行します。表示側はJSONを読み取るだけで、状態を推測して書き換えません。
 
 ## 更新規則
 

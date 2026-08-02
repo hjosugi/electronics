@@ -19,7 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 GRAPH_PATH = ROOT / "docs" / "graph" / "project-graph.json"
 GRAPH_HTML = ROOT / "docs" / "graph" / "index.html"
 GRAPH_JS = ROOT / "docs" / "graph" / "graph.js"
+GRAPH_MODEL = ROOT / "docs" / "graph" / "graph-model.mjs"
 GRAPH_CSS = ROOT / "docs" / "assets" / "graph.css"
+GRAPH_TEST = ROOT / "tests" / "project-graph-model.test.mjs"
 KINDS = {"issue", "decision", "artifact", "evidence", "release", "gate"}
 STATUSES = {"verified", "open", "blocked", "planned"}
 STAGES = {"decision", "implementation", "verification", "publication"}
@@ -170,7 +172,7 @@ def self_test(data: dict[str, Any]) -> None:
 
 
 def validate_site() -> str:
-    for path in (GRAPH_HTML, GRAPH_JS, GRAPH_CSS):
+    for path in (GRAPH_HTML, GRAPH_JS, GRAPH_MODEL, GRAPH_CSS, GRAPH_TEST):
         if not path.is_file():
             raise GraphError(f"graph site fileがありません: {path.relative_to(ROOT)}")
     html = GRAPH_HTML.read_text(encoding="utf-8")
@@ -179,21 +181,35 @@ def validate_site() -> str:
         raise GraphError("graph HTMLがlocal JS/CSSを読み込んでいません")
     if "project-graph.json" not in javascript:
         raise GraphError("graph.jsが正本JSONを参照していません")
-    for forbidden in ("innerHTML", "eval(", "new Function(", "document.write("):
-        if forbidden in javascript:
-            raise GraphError(f"graph.jsで禁止APIを使っています: {forbidden}")
+    if 'from "./graph-model.mjs"' not in javascript:
+        raise GraphError("graph.jsが共通filter modelを参照していません")
+    for script_path in (GRAPH_JS, GRAPH_MODEL):
+        script = script_path.read_text(encoding="utf-8")
+        for forbidden in ("innerHTML", "eval(", "new Function(", "document.write("):
+            if forbidden in script:
+                raise GraphError(f"{script_path.name}で禁止APIを使っています: {forbidden}")
     node = shutil.which("node")
     if node is None:
         return "node syntax checkは環境にないためskip"
+    for script_path in (GRAPH_JS, GRAPH_MODEL):
+        result = subprocess.run(
+            [node, "--check", str(script_path)],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise GraphError(f"{script_path.name} syntax error: {result.stderr.strip()}")
     result = subprocess.run(
-        [node, "--check", str(GRAPH_JS)],
+        [node, "--test", str(GRAPH_TEST)],
         check=False,
         capture_output=True,
         text=True,
+        cwd=ROOT,
     )
     if result.returncode != 0:
-        raise GraphError(f"graph.js syntax error: {result.stderr.strip()}")
-    return "node syntax check済み"
+        raise GraphError(f"graph model test error:\n{result.stdout}{result.stderr}")
+    return "node syntax + filter model test 5件済み"
 
 
 def main() -> int:
