@@ -1,3 +1,5 @@
+import {filterGraph} from "./graph-model.mjs";
+
 const GRAPH_URL = new URL("project-graph.json", import.meta.url);
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STAGES = ["decision", "implementation", "verification", "publication"];
@@ -62,63 +64,14 @@ function populateFilters(data) {
   relations.forEach((value) => elements.relation.append(optionFor(value)));
 }
 
-function searchableNode(node) {
-  return [node.id, node.label, node.kind, node.status, node.stage, node.summary]
-    .join(" ")
-    .toLocaleLowerCase("ja");
-}
-
-function searchableEdge(edge, nodesById) {
-  return [
-    edge.id,
-    edge.relation,
-    edge.confidence,
-    edge.note,
-    nodesById.get(edge.source)?.label,
-    nodesById.get(edge.target)?.label,
-  ]
-    .join(" ")
-    .toLocaleLowerCase("ja");
-}
-
 function currentView(data) {
-  const term = elements.search.value.trim().toLocaleLowerCase("ja");
-  const nodesById = new Map(data.nodes.map((node) => [node.id, node]));
-  const nodeMatches = new Set(
-    data.nodes
-      .filter((node) => !elements.kind.value || node.kind === elements.kind.value)
-      .filter((node) => !elements.status.value || node.status === elements.status.value)
-      .filter((node) => !term || searchableNode(node).includes(term))
-      .map((node) => node.id),
-  );
-
-  if (term) {
-    for (const edge of data.edges) {
-      if (!searchableEdge(edge, nodesById).includes(term)) continue;
-      const source = nodesById.get(edge.source);
-      const target = nodesById.get(edge.target);
-      for (const node of [source, target]) {
-        if (!node) continue;
-        if (elements.kind.value && node.kind !== elements.kind.value) continue;
-        if (elements.status.value && node.status !== elements.status.value) continue;
-        nodeMatches.add(node.id);
-      }
-    }
-  }
-
-  const edges = data.edges
-    .filter((edge) => !elements.relation.value || edge.relation === elements.relation.value)
-    .filter((edge) => !elements.confidence.value || edge.confidence === elements.confidence.value)
-    .filter((edge) => nodeMatches.has(edge.source) && nodeMatches.has(edge.target));
-
-  if (elements.relation.value || elements.confidence.value) {
-    const connected = new Set(edges.flatMap((edge) => [edge.source, edge.target]));
-    return {
-      nodes: data.nodes.filter((node) => nodeMatches.has(node.id) && connected.has(node.id)),
-      edges,
-    };
-  }
-  return {nodes: data.nodes.filter((node) => nodeMatches.has(node.id)), edges};
+  return filterGraph(data, {
+    search: elements.search.value,
+    kind: elements.kind.value,
+    status: elements.status.value,
+    relation: elements.relation.value,
+    confidence: elements.confidence.value,
+  });
 }
 
 function layoutNodes(nodes) {

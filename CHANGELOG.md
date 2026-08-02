@@ -10,6 +10,7 @@
 - NotebookLMへ採用ADRを含め、製造snapshotと発注blockerを機械判定するready manifestを追加
 - 2 × 2 breadboardの8キー配線、段階通電、左右試験、ghost、抜線、波形の実施手順を追加
 - Issue、ADR、証拠、release、発注blockerをconfidenceと根拠付きedgeで結ぶPages graphを追加
+- Pages graphの検索・relation・confidence絞り込みをDOMから分離し、Node標準テスト5件を追加
 
 ## 0.2.0 - 2026-08-01
 
