@@ -43,7 +43,7 @@
       "id": "issue-16",
       "label": "Issue #16 keywell / tent",
       "kind": "issue",
-      "status": "verified",
+      "status": "open",
       "stage": "implementation",
       "url": "https://github.com/hjosugi/electronics/issues/16",
       "summary": "平面wedgeとtrue keywell候補の比較、モック、実測を追跡。"
@@ -52,7 +52,7 @@
       "id": "issue-24",
       "label": "Issue #24 evidence graph",
       "kind": "issue",
-      "status": "open",
+      "status": "verified",
       "stage": "publication",
       "url": "https://github.com/hjosugi/electronics/issues/24",
       "summary": "curated data、Pages表示、filter model testを分離した依存graph。"
