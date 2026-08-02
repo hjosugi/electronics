@@ -22,6 +22,8 @@ documents=(
   docs/13-matrix-rj45-safety.md
   docs/14-qmk-firmware.md
   docs/15-qmk-matrix-tests.md
+  docs/16-notebooklm-order-readiness.md
+  docs/17-breadboard-matrix-test.md
   docs/layout/README.md
   docs/adr/0001-use-waveshare-rp2040-zero.md
   docs/adr/0002-use-36-key-choc-v1-layout.md
@@ -44,6 +46,14 @@ trap 'rm -f -- "$temporary"' EXIT
     python3 "$script_dir/rewrite-markdown-links.py" "$repo_root/$document" "$repo_root/notebooklm" | sed '1s/^# /## /'
   done
 } >"$temporary"
+
+python3 - "$temporary" <<'PY'
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.write_text(path.read_text(encoding="utf-8").rstrip() + "\n", encoding="utf-8")
+PY
 
 mv -- "$temporary" "$output"
 trap - EXIT

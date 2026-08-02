@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 
-.PHONY: notebooklm check-notebooklm layout check-layout check-document-css check-links check-qmk build-qmk check check-kicad check-kicad-negative check-safety-schematic environment simulate validate validate-hardware package
+.PHONY: notebooklm check-notebooklm layout check-layout check-document-css check-links check-qmk build-qmk check check-kicad check-kicad-negative check-safety-schematic environment order-readiness simulate validate validate-hardware package
 
 notebooklm:
 	./scripts/build-notebooklm.sh
@@ -41,6 +41,9 @@ check-safety-schematic:
 
 environment:
 	bash ./scripts/check-environment.sh --report
+
+order-readiness:
+	python3 ./scripts/check-order-readiness.py
 
 simulate:
 	./scripts/check-spice.sh

@@ -50,8 +50,10 @@ PC ─ USB ─ 左側RP2040 ─ 直列抵抗 ─ 8P8Cケーブル ─ 右側ス�
 14. [36キーmatrix、8P8C pinout、保護回路、安全性](docs/13-matrix-rj45-safety.md)
 15. [RP2040 QMKファームウェア環境](docs/14-qmk-firmware.md)
 16. [QMK duplex matrix自動テストと2 × 2実機計画](docs/15-qmk-matrix-tests.md)
-17. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
-18. [Architecture Decision Records](docs/adr/README.md)
+17. [NotebookLM入力とPCB発注readyチェックリスト](docs/16-notebooklm-order-readiness.md)
+18. [2 × 2 breadboardでJapanese duplex matrixを試す](docs/17-breadboard-matrix-test.md)
+19. [初号機36キーレイアウトと調整プロファイル](docs/layout/README.md)
+20. [Architecture Decision Records](docs/adr/README.md)
 
 NotebookLMへ登録する候補は[ソースリスト](docs/notebooklm-sources.md)にまとめています。[統合Markdown](notebooklm/split-keyboard-hotplug-safety.md)は`make notebooklm`で再生成できます。
 
@@ -111,6 +113,8 @@ KiCadにはngspiceベースの統合シミュレータがあります。CLI版`n
 KiCad 10環境、空回路ERC、RC過渡解析をまとめて確認する手順は[開発環境スモークテスト](docs/10-kicad-environment.md)に記録しています。
 
 現在のKiCad/ngspice/QMK導入状態は`make environment`で確認できます。確認済みパッケージ版、3Dライブラリ容量、エージェント環境の制約は[ツールチェーン環境](docs/11-toolchain-environment.md)に記録しています。
+
+NotebookLM登録とPCB発注の現在gateは`make order-readiness`で確認できます。未完項目の表示は失敗ではなく、発注直前の厳格な判定には`python3 scripts/check-order-readiness.py --require-ready`を使います。
 
 固定したQMK checkoutからUF2を作る手順は[QMKファームウェア環境](docs/14-qmk-firmware.md)にあります。
 

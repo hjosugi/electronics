@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-08-01",
+  "design_ref": null,
+  "pcb_path": null,
+  "fabricator": {
+    "candidate": "JLCPCB",
+    "quote_reviewed": false,
+    "order_submitted": false
+  },
+  "notebooklm": {
+    "bundle_path": "notebooklm/split-keyboard-hotplug-safety.md",
+    "source_list_path": "docs/notebooklm-sources.md",
+    "notebook_created": false,
+    "citation_smoke_test": false
+  },
+  "verification": {
+    "final_erc": false,
+    "final_drc": false,
+    "issue_10_physical": false,
+    "issue_11_hotplug": false,
+    "gerber_viewer_review": false,
+    "bom_review": false
+  },
+  "artifacts": {
+    "gerber_zip": null,
+    "drill_map": null,
+    "schematic_pdf": null,
+    "pcb_pdf": null,
+    "bom": null,
+    "position_file": null
+  }
+}

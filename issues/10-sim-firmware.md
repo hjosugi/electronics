@@ -13,5 +13,6 @@ Labels: simulation,firmware
 ## 進捗
 - [x] QMK native GoogleTestで全36位置、方向切替、抜線、ghost pathを自動実行
 - [x] 理想ダイオード最悪条件でphantomを出さない保守的filterを実装
+- [x] 2 × 2 breadboardの配線、通電、全組合せ、抜線、波形の手順を文書化
 - [ ] 2 × 2ブレッドボードで8キー、組合せ、抜線、再接続を実測
 - [ ] 実測結果、基板/部品/電源/UF2 SHAを記録

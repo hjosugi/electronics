@@ -18,7 +18,16 @@
 - https://github.com/qmk/qmk_firmware/tree/4ffb1ab16c443f2def5949d39b56057c0c88c88b — UF2合格時に固定したQMK本体
 - https://github.com/tompi/qmk_firmware/blob/cheapino/keyboards/cheapino/matrix.c — Cheapinoの双方向走査（比較資料）
 - https://docs.kicad.org/ — KiCad 10 マニュアル (特にシミュレータ章)
+- https://docs.kicad.org/10.0/en/cli/cli.html — ERC/DRC、Gerber、drillを自動化するKiCad 10 CLI
+- https://docs.kicad.org/10.0/en/gerbview/gerbview.html — Gerber/Excellon viewerの公式手順
 - https://kibot.readthedocs.io/ — CI での出力自動化
+- https://kibot.readthedocs.io/en/latest/configuration.html — KiBot設定ファイルの正本
+- https://kibot.readthedocs.io/en/latest/configuration/outputs/gerber.html — KiBot Gerber output
+- https://kibot.readthedocs.io/en/latest/configuration/outputs/gerb_drill.html — KiBot drill output
+- https://jlcpcb.com/help/article/gerber-files-preparation — JLCPCBが受理するGerber/ExcellonとZIP構成
+- https://jlcpcb.com/help/article/how-to-generate-gerber-and-drill-files-in-kicad-7 — KiCadからGerber/drillを作るJLCPCB手順
+- https://jlcpcb.com/help/article/how-to-generate-the-bom-and-centroid-file-from-kicad — KiCad 10のBOM/CPL手順
+- https://www.waveshare.com/wiki/RP2040-Zero — RP2040-Zero pinout、UF2、電源端子
 - サリチル酸ブログ「自作キーボード温泉街の歩き方」 — 設計ノウハウ / ビルドガイドカテゴリから該当記事を個別 URL で追加
 
 ## データシート (PDF をダウンロードして追加)

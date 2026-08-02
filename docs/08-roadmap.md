@@ -67,6 +67,8 @@ PCのUSBポート、Ethernetスイッチ、PoE機器を故障注入用には使�
 
 Issue 12では、統合Markdownと一次資料をNotebookLMへ登録し、設計判断を検索できる状態にします。発注前には次の成果物をそろえます。
 
+NotebookLM入力、製造snapshot、Gerber/BOM/viewer確認は[発注readyチェックリスト](16-notebooklm-order-readiness.md)と`production/order-readiness.json`で追跡します。製造用PCBが存在しない現在は機械判定も`NOT READY`であり、仮Gerberを生成して進捗扱いにはしません。
+
 - ERC/DRC結果
 - 回路図・PCB PDF
 - Gerberとドリルのviewer確認

@@ -10,3 +10,11 @@ Labels: docs
 ## 完了条件
 - NotebookLM notebook が稼働している
 - 発注チェックリスト完成
+
+## 進捗
+- [x] 統合Markdownへdocsと採用ADRを再現可能に結合
+- [x] 一次資料をページ単位のURLへ具体化
+- [x] 発注ready manifest、機械判定、発注チェックリストを追加
+- [ ] NotebookLM notebookを作成し、引用smoke testを実施
+- [ ] 製造用PCB、Gerber、drill、BOM、PDFを生成してviewer確認
+- [ ] 発注対象commitと成果物SHAを固定して発注

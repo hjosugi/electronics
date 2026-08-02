@@ -42,6 +42,8 @@ QMK_HOME=/path/to/qmk_firmware make build-qmk
 
 PC直結で故障条件を作らず、電流制限付き3.3 V/5 V電源または保護したUSB hubを使います。中央リンクの通電挿抜評価はIssue #11の治具ができるまで行いません。
 
+部品表、8キーの具体的な配線、左右halfの期待key、28通りの2-key、ghost path、段階的な通電、抜線と波形記録は[2 × 2 breadboard試験手順](17-breadboard-matrix-test.md)にまとめています。この節は完了条件の要約です。
+
 最小配線は2 row + 2 column、Bank A/B各4キーの計8キーです。
 
 | 信号 | RP2040 | 直列抵抗 | 用途 |
