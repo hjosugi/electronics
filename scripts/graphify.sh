@@ -15,7 +15,7 @@
 # https://github.com/Graphify-Labs/graphify
 set -eu
 
-REPO_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+REPO_ROOT=$(CDPATH="" cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$REPO_ROOT"
 
 PLATFORMS=${GRAPHIFY_PLATFORMS:-"claude copilot codex"}
